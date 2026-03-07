@@ -1,18 +1,15 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';// import environment
 import { map, tap, catchError, of } from 'rxjs';
 import { DuaSender } from '../models/dua-sender';
 import { DuaReciever } from '../models/dua-reciever';
 
-interface DuaApiResponse {
-  duas: Array<{ dua: string; name: string; explanation: string }>;
-}
-
 @Injectable({ providedIn: 'root' })
 export class DuaService {
-  constructor(private http: HttpClient) {}
+  private baseUrl = environment.apiUrl; // use environment variable
 
-  private baseUrl = '/api/dua';
+  constructor(private http: HttpClient) {}
 
   private duasSignal = signal<DuaReciever[]>([]);
   private loadingSignal = signal(false);
@@ -27,7 +24,10 @@ export class DuaService {
     this.errorSignal.set(null);
 
     return this.http
-      .post<DuaApiResponse>(`${this.baseUrl}/generate`, { text: inputtedDua.inputtedDuaText })
+      .post<{ duas: Array<{ dua: string; name: string; explanation: string }> }>(
+        `${this.baseUrl}/generate`,
+        { text: inputtedDua.inputtedDuaText }
+      )
       .pipe(
         map((res) =>
           res.duas.map(
@@ -50,4 +50,3 @@ export class DuaService {
       );
   }
 }
-
