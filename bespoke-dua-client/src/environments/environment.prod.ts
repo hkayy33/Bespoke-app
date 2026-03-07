@@ -1,4 +1,4 @@
 export const environmentProd = {
   production: true,
-  apiUrl: 'https://bespoke-app.fly.dev/'
+  apiUrl: 'https://bespoke-app.fly.dev/api/dua'
 };
