@@ -1,6 +1,6 @@
 <div class="container">
     <h2>Type your dua below</h2>
-    <textarea placeholder="Type your dua here..."></textarea>
+    <textarea #inputText placeholder="Type your dua here..."></textarea>
     <span class="example-text">Example: "Oh Allah, grant me success in..."</span>
-    <button>Bespokify</button>
+    <button (click)="submitDua(inputText.value)">Bespokify</button>
 </div>
