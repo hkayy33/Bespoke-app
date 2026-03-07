@@ -10,6 +10,9 @@
 
     
     .dua-container{
+        .name{
+            font-weight: 600;
+        }
         .exit-btn{
             float: right;
             color: lightgrey;
@@ -17,6 +20,9 @@
             &:active{
                 color: black;
             }
+        }
+        p{
+            font-family: "Inter", sans-serif;
         }
 
 

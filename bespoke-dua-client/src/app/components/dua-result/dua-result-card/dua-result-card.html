@@ -3,6 +3,7 @@
         <div class="exit-btn" *ngIf="infoButtonSelected" (click)="infoButtonSelected = !infoButtonSelected">
             <i class="fa-solid fa-x"></i>
         </div>
+        <p *ngIf="infoButtonSelected" class="name">{{dua.name}}</p>
         <p>{{ infoButtonSelected  ? dua.explanation : dua.duaText}}</p>
     </div>
     <div class="action-buttons">
