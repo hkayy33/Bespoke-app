@@ -1,7 +1,17 @@
-.container{
+.container {
     display: flex;
     flex-direction: column;
     padding: 5px;
     gap: 10px;
+    padding-bottom: 30px;
+           p{
+            font-family: "Inter", sans-serif;
+        }
+    
 
+    .placeholder {
+        color: #666;
+        font-style: italic;
+        padding: 20px;
+    }
 }

@@ -2,5 +2,10 @@
     <h2>Type your dua below</h2>
     <textarea #inputText placeholder="Type your dua here..."></textarea>
     <span class="example-text">Example: "Oh Allah, grant me success in..."</span>
-    <button (click)="submitDua(inputText.value)">Bespokify</button>
+    <button (click)="submitDua(inputText.value); inputText.value = ''" [disabled]="duaService.loading()">
+        {{ duaService.loading() ? 'Generating...' : 'Beskpoke My Dua' }}
+    </button>
+    @if (duaService.error()) {
+        <p class="error">{{ duaService.error() }}</p>
+    }
 </div>
