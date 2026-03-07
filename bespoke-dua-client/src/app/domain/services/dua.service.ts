@@ -1,13 +1,13 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';// import environment
 import { map, tap, catchError, of } from 'rxjs';
 import { DuaSender } from '../models/dua-sender';
 import { DuaReciever } from '../models/dua-reciever';
+import { environmentProd } from '../../../environments/environment.prod';
 
 @Injectable({ providedIn: 'root' })
 export class DuaService {
-  private baseUrl = environment.apiUrl; // use environment variable
+  private baseUrl = environmentProd.apiUrl; // use environment variable
 
   constructor(private http: HttpClient) {}
 
