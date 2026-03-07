@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Bind to Fly's PORT (default 8080) on 0.0.0.0
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
 // Add services
 builder.Services.AddCors(options =>
 {
@@ -31,9 +35,5 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
-// Fly.io requirement: listen on correct port and interface
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.Run();
