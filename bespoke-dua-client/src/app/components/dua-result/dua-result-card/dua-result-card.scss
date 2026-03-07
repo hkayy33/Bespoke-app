@@ -1,0 +1,44 @@
+.container{
+
+    display: flex;
+    flex-direction: column;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 10px;
+    min-height: 70px;
+    background-color: rgba(239, 236, 236, 0.194);
+
+    
+    .dua-container{
+        .exit-btn{
+            float: right;
+            color: lightgrey;
+
+            &:active{
+                color: black;
+            }
+        }
+
+
+    }
+    .action-buttons{
+        margin-left: auto;
+        margin-top: auto;
+        padding-top: 10px;
+        display: flex;
+        flex-direction: row;
+        gap:10px;
+        button{
+            border: none;
+            border-radius: 5px;
+
+            color: gray;
+            padding: 7px;
+
+            &:active{
+                color: black;
+                background-color: lightgrey;
+            }
+        }
+    }
+}
