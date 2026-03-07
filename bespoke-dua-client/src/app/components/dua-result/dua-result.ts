@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DuaResultList } from './dua-result-list/dua-result-list';
+import { DuaReciever } from '../../domain/models/dua-reciever';
 
 @Component({
   selector: 'app-dua-result',

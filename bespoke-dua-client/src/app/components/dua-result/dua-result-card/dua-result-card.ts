@@ -10,7 +10,22 @@ import { CommonModule } from '@angular/common';
 })
 export class DuaResultCard {
   infoButtonSelected = false;
+  copied = false;
 
   @Input() dua!: DuaReciever 
+
+copyToClipboard(text: string) {
+  // Immediately update the UI
+  this.copied = true;
+  setTimeout(() => {
+    this.copied = false;
+  }, 1500);
+
+  try {
+    navigator.clipboard?.writeText(text);
+  } catch (e) {
+    console.error('Clipboard copy failed', e);
+  }
+}
 
 }
