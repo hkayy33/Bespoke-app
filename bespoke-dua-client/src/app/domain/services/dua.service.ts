@@ -1,13 +1,53 @@
-// src/app/core/services/tutor.service.ts
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
+import { map, tap, catchError, of } from 'rxjs';
+import { DuaSender } from '../models/dua-sender';
+import { DuaReciever } from '../models/dua-reciever';
 
+interface DuaApiResponse {
+  duas: Array<{ dua: string; name: string; explanation: string }>;
+}
 
 @Injectable({ providedIn: 'root' })
 export class DuaService {
   constructor(private http: HttpClient) {}
 
-  baseUrl = '/api/dua';
-  
+  private baseUrl = '/api/dua';
 
+  private duasSignal = signal<DuaReciever[]>([]);
+  private loadingSignal = signal(false);
+  private errorSignal = signal<string | null>(null);
+
+  duas = computed(() => this.duasSignal());
+  loading = computed(() => this.loadingSignal());
+  error = computed(() => this.errorSignal());
+
+  generateDuas(inputtedDua: DuaSender) {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    return this.http
+      .post<DuaApiResponse>(`${this.baseUrl}/generate`, { text: inputtedDua.inputtedDuaText })
+      .pipe(
+        map((res) =>
+          res.duas.map(
+            (d): DuaReciever => ({
+              duaText: d.dua,
+              name: d.name,
+              explanation: d.explanation,
+            })
+          )
+        ),
+        tap((duas) => {
+          this.duasSignal.set(duas);
+          this.loadingSignal.set(false);
+        }),
+        catchError((err) => {
+          this.loadingSignal.set(false);
+          this.errorSignal.set(err?.error?.message || err?.message || 'Failed to generate duas');
+          return of([]);
+        })
+      );
+  }
 }
+

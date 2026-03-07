@@ -1,4 +1,5 @@
-export interface DuaReciever{
-    duaText : string
-    explanation: string;
+export interface DuaReciever {
+  duaText: string;
+  name: string;
+  explanation: string;
 }

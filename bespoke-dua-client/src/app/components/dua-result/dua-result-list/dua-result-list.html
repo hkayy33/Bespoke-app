@@ -1,4 +1,9 @@
-
 <div class="container">
-<app-dua-result-card *ngFor="let dua of duas" [dua] = dua></app-dua-result-card>
+  @if (duaService.loading()) {
+    <p>Generating your personalized duas...</p>
+  } @else if (duaService.duas().length > 0) {
+    <app-dua-result-card *ngFor="let dua of duaService.duas()" [dua]="dua"></app-dua-result-card>
+  } @else {
+    <p class="placeholder">Type your dua above and click Bespokify to generate personalized variations.</p>
+  }
 </div>
