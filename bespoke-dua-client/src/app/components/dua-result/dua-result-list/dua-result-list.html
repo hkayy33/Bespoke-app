@@ -1,9 +1,18 @@
 <div class="container">
   @if (duaService.loading()) {
-    <p>Generating your personalised duas...</p>
+       <div class="loader-wrapper">
+      <div class="loader-carousel">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+   
   } @else if (duaService.duas().length > 0) {
     <app-dua-result-card *ngFor="let dua of duaService.duas()" [dua]="dua"></app-dua-result-card>
   } @else {
-    <p class="placeholder">Type your dua above and click the button above to generate personalised variations.</p>
+    <p class="placeholder">
+      Type your dua above and click the button above to generate personalised variations.
+    </p>
   }
 </div>
