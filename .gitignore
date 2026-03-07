@@ -1,0 +1,27 @@
+# API keys and secrets (do not commit)
+Bespoke-app-server/appsettings.json
+**/appsettings.Local.json
+**/appsettings.*.local.json
+
+# .NET
+Bespoke-app-server/bin/
+Bespoke-app-server/obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.pdb
+*.log
+[Bb]in/
+[Oo]bj/
+
+# Node / Angular (client)
+bespoke-dua-client/node_modules/
+bespoke-dua-client/dist/
+bespoke-dua-client/.angular/
+
+# IDE and system
+.idea/
+.vscode/
+*.swp
+.DS_Store
