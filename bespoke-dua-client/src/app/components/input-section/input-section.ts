@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DuaService } from '../../domain/services/dua.service';
@@ -12,6 +12,7 @@ import { DuaService } from '../../domain/services/dua.service';
 export class InputSection {
   constructor(protected duaService: DuaService) {}
   text = '';
+  showAimModal = signal(false);
 
   submitDua(value: string) {
     const trimmed = value?.trim();
