@@ -11,11 +11,14 @@ import { DuaService } from '../../domain/services/dua.service';
 })
 export class InputSection {
   constructor(protected duaService: DuaService) {}
+  text = '';
 
   submitDua(value: string) {
     const trimmed = value?.trim();
     if (!trimmed) return;
 
-    this.duaService.generateDuas({ inputtedDuaText: trimmed }).subscribe();
+    this.duaService.generateDuas({ inputtedDuaText: trimmed }).subscribe(() => {
+      this.text = '';
+    });
   }
 }
