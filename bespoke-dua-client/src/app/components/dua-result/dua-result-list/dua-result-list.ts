@@ -11,14 +11,14 @@ import { DuaReciever } from '../../../domain/models/dua-reciever';
   styleUrl: './dua-result-list.scss',
 })
 export class DuaResultList {
-  duas : DuaReciever[] = []
+  // duas : DuaReciever[] = []
   constructor(protected duaService: DuaService) {}
 
-  ngOnInit(): void{
-    this.duas=[{
-      duaText: 'testing',
-      name: 'testtest',
-      explanation:'helo'
-    }]
-  }
+  // ngOnInit(): void{
+  //   this.duas=[{
+  //     duaText: 'testing',
+  //     name: 'testtest',
+  //     explanation:'helo'
+  //   }]
+  // }
 }
