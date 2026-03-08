@@ -12,9 +12,11 @@
     color: white;
 
     img{
-        width: 64px;
+        width: 100px;
         height: auto;
-        margin-bottom: 6px;
+        margin-bottom: 10px;
+        
+      
     }
 
     .title{
@@ -33,11 +35,12 @@
     }
 
     .quote{
+        border-top: 2px solid #C89B3C;
         font-size: 14px;
         max-width: 320px;
         line-height: 1.4;
         color: #e8e8e8;
-        padding: 0 10px;
+        padding: 5px 10px;
 
         span{
             display: block;
