@@ -1,5 +1,29 @@
 <div class="container">
-    <h2>Write Your Dua</h2>
+    <div class="top-text">
+        <h2>Write Your Dua</h2>
+        <button type="button" class="aim" (click)="showAimModal.set(true)">
+            The Aim <i class="fa-solid fa-question"></i>
+        </button>
+    </div>
+
+    @if (showAimModal()) {
+        <div class="modal-backdrop" (click)="showAimModal.set(false)">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <button type="button" class="modal-close" (click)="showAimModal.set(false)" aria-label="Close">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+                <p>
+                    We often hear, &ldquo;Make du'a with yaqeen (full conviction),&rdquo; but how do we do this?
+                    By calling upon Allah through His names and attributes, we remind ourselves of His mercy, power, and wisdom.
+                </p>
+                <p>
+                    BespokeDua is built on this idea, connecting your personal du'as to the reassuring ropes our Lord has hung down,
+                    so you can ask with certainty, hope, and sincerity.
+                </p>
+            </div>
+        </div>
+    }
+
 
     <div class="input-group">
         <textarea #inputText placeholder="Type your dua here..." [(ngModel)]="text">{{text}}</textarea>
