@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { NavBar } from './shared/nav-bar/nav-bar';
 import { InputSection } from './components/input-section/input-section';
 import { DuaResult } from './components/dua-result/dua-result';
+import { inject } from '@vercel/analytics';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,9 @@ import { DuaResult } from './components/dua-result/dua-result';
 })
 export class App {
   protected readonly title = signal('bespoke-dua-client');
+
+  constructor() {
+    // Initialize Vercel Web Analytics
+    inject();
+  }
 }
