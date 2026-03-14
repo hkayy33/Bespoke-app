@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Linq;
 using System;
+using System.Diagnostics;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -55,6 +56,28 @@ Output format (VERY IMPORTANT):
 - Do NOT output JSON.
 - Do NOT use `£` or `||` for anything other than the separators described above.
 
+Name rule (CRITICAL):
+You MUST use names only from this list:
+Rahman, Rahim, Malik, Quddus, Salam, Mumin, Muhaymin, Aziz, Jabbar, Mutakabbir,
+Khaliq, Bari, Musawwir, Ghaffar, Qahhar, Wahhab, Razzaq, Fattah, Alim, Qabid,
+Basit, Khafid, Rafi, Muizz, Mudhill, Sami, Basir, Hakam, Adl, Latif,
+Khabir, Halim, Azim, Ghafur, Shakur, Aliyy, Kabir, Hafiz, Muqit, Hasib,
+Jalil, Karim, Raqib, Mujib, Wasi, Hakim, Wadud, Majid, Baith, Shahid,
+Haqq, Wakil, Qawiyy, Matin, Wali, Hamid, Muhsi, Mubdi, Muid, Muhyi,
+Mumit, Hayy, Qayyum, Wajid, Majid, Wahid, Samad, Qadir, Muqtadir, Muqaddim,
+Muakhkhir, Awwal, Akhir, Zahir, Batin, Waliyy, Mutaali, Barr, Tawwab, Muntaqim,
+Afuw, Rauf, MalikAlMulk, DhulJalalWalIkram, Muqsit, Jami, Ghani, Mughni,
+Mani, Darr, Nafi, Nur, Hadi, Badi, Baqi, Warith, Rashid, Sabur
+
+Formatting rule:
+- Always write: Ya + Name
+- Never add Al / Ar / As / Ad / At
+- Never modify the names
+- Use exactly as written in the list
+
+If you use any name outside the list, regenerate.
+
+
 User request:
 {request.Text}
 ";
@@ -102,6 +125,7 @@ User request:
         if (string.IsNullOrWhiteSpace(jsonText))
             return StatusCode(500, "Gemini returned empty response");
 
+        //Console.WriteLine(jsonText);
         // Split into 3 entries by £ delimiter.
         var entries = jsonText
             .Split('£', StringSplitOptions.RemoveEmptyEntries)
