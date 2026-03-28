@@ -13,13 +13,25 @@ export class InputSection {
   constructor(protected duaService: DuaService) {}
   text = '';
   showAimModal = signal(false);
+  emptyInputMessage = false;
 
   submitDua(value: string) {
-    const trimmed = value?.trim();
-    if (!trimmed) return;
+  const trimmed = value?.trim();
 
-    this.duaService.generateDuas({ inputtedDuaText: trimmed }).subscribe(() => {
+  if (!trimmed) {
+    this.emptyInputMessage = true;
+    return;
+  }
+
+  this.emptyInputMessage = false;
+
+  this.duaService.clearDuas();
+
+  this.duaService.generateDuas({ inputtedDuaText: trimmed })
+    .subscribe(() => {
       this.text = '';
     });
-  }
+}
+
+
 }

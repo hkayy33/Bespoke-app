@@ -20,22 +20,28 @@ export class DuaService {
   loading = computed(() => this.loadingSignal());
   error = computed(() => this.errorSignal());
 
+  clearDuas() {
+    this.duasSignal.set([]);
+    this.errorSignal.set(null);
+  }
+
   generateDuas(inputtedDua: DuaSender) {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
     return this.http
-      .post<{ duas: Array<{ dua: string; name: string; explanation: string }> }>(
-        `${this.baseUrl}/generate`,
-        { text: inputtedDua.inputtedDuaText }
-      )
+      .post<{
+        duas: Array<{
+          dua: string;
+          explanations: Array<{ name: string; explanation: string }>;
+        }>;
+      }>(`${this.baseUrl}/generate`, { text: inputtedDua.inputtedDuaText })
       .pipe(
-        map((res) =>
+          map((res) =>
           res.duas.map(
             (d): DuaReciever => ({
               duaText: d.dua,
-              name: d.name,
-              explanation: d.explanation,
+              explanations: d.explanations ?? [],
             })
           )
         ),
