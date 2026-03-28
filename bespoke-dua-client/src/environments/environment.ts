@@ -1,4 +1,4 @@
 export const environmentDev = {
   production: false,
-  apiUrl: 'http://localhost:5000/api/dua'
+  apiUrl: 'http://localhost:8080/api/dua'
 };

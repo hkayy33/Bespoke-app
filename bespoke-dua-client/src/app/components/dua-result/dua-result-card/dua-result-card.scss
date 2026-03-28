@@ -18,10 +18,60 @@
         box-shadow: 0 6px 16px rgba(0,0,0,0.08);
     }
 
-    .dua-header{
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        padding: 28px 24px;
+        max-width: 480px;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+
+        p {
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+            margin: 0 0 16px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        color: #888;
+        font-size: 18px;
+
+        &:hover {
+            color: #333;
+        }
+    }
+
+    .dua-header{
+        padding-top: 10px;
+        display: flex;
+        flex-direction: column;
 
         .name{
             font-weight: 600;

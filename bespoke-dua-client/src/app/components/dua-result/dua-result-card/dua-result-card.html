@@ -1,25 +1,34 @@
 <div class="dua-card">
 
-    <div class="dua-header" *ngIf="infoButtonSelected">
-        <p class="name">{{ dua.name }}</p>
-        <button class="exit-btn" (click)="infoButtonSelected = false">
-            <i class="fa-solid fa-x"></i>
-        </button>
+    @if (showAimModal()) {
+        <div class="modal-backdrop" (click)="showAimModal.set(false)">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <button type="button" class="modal-close" (click)="showAimModal.set(false)" aria-label="Close">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+                @for (exp of dua.explanations; track $index) {
+                    <div class="dua-header">
+                        <p class="name">{{ exp.name }}</p>
+                        <p class="dua-text">{{ exp.explanation }}</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+        <p class="dua-text">
+            {{dua.duaText }}
+        </p>
+
+        <div class="action-buttons">
+            <button type="button" class="info-btn" (click)="showAimModal.set(true)">
+                <i class="fa-regular fa-lightbulb"></i>
+            </button>
+
+            <button class="copy-btn" (click)="copyToClipboard(dua.duaText)">
+                <i class="fa-regular fa-copy"></i>
+                <span>{{copied ? "Copied!" : "Copy"}}</span>
+            </button>
+        </div>
     </div>
 
-    <p class="dua-text">
-        {{ infoButtonSelected ? dua.explanation : dua.duaText }}
-    </p>
-
-    <div class="action-buttons">
-        <button class="info-btn" (click)="infoButtonSelected = true">
-            <i class="fa-regular fa-lightbulb"></i>
-        </button>
-
-        <button class="copy-btn" (click)="copyToClipboard(dua.duaText)">
-            <i class="fa-regular fa-copy"></i>
-            <span>{{copied ? "Copied!" : "Copy"}}</span>
-        </button>
-    </div>
-
-</div>

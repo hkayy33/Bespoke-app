@@ -1,4 +1,4 @@
-import { Component, Input, input } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { DuaReciever } from '../../../domain/models/dua-reciever';
 import { CommonModule } from '@angular/common';
 
@@ -9,8 +9,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './dua-result-card.scss',
 })
 export class DuaResultCard {
-  infoButtonSelected = false;
   copied = false;
+  showAimModal = signal(false);
 
   @Input() dua!: DuaReciever 
 

@@ -21,4 +21,9 @@ export class DuaResultList {
   //     explanation:'helo'
   //   }]
   // }
+
+  clearList(): void {
+    this.duaService.clearDuas();
+
+  }
 }

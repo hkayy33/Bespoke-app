@@ -1,8 +1,8 @@
 <div class="container">
     <div class="top-text">
-        <h2>Write Your Dua</h2>
+        <h2>Write your heart’s dua</h2>
         <button type="button" class="aim" (click)="showAimModal.set(true)">
-            The Aim <i class="fa-solid fa-question"></i>
+            The Aim ?
         </button>
     </div>
 
@@ -24,7 +24,6 @@
         </div>
     }
 
-
     <div class="input-group">
         <textarea #inputText placeholder="Type your dua here..." [(ngModel)]="text">{{text}}</textarea>
     </div>
@@ -34,6 +33,10 @@
     <button (click)="submitDua(inputText.value)" [disabled]="duaService.loading()">
         {{ duaService.loading() ? 'Generating...' : 'Bespoke My Dua' }}
     </button>
+
+    @if (emptyInputMessage) {
+        <p class="error">Please write your dua.</p>
+    }
 
     @if (duaService.error()) {
         <p class="error">Please try again.</p>
