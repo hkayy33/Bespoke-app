@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using BespokeDuaApi.Models;
+using BespokeDuaApi.Services;
 using Newtonsoft.Json;
 using System.Text;
 using System.Linq;
@@ -15,15 +16,17 @@ public class DuaController : ControllerBase
 {
     private readonly IConfiguration _config;
     private readonly HttpClient _httpClient;
+    private readonly UsageService _usageService;
 
     private const string GeminiUrl =
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
-    public DuaController(IConfiguration config, IHttpClientFactory factory)
+    public DuaController(IConfiguration config, IHttpClientFactory factory, UsageService usageService)
     {
         _config = config;
         _httpClient = factory.CreateClient();
         _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", _config["GeminiApiKey"]);
+        _usageService = usageService;
     }
 
     [HttpPost("generate")]
