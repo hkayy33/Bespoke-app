@@ -95,4 +95,8 @@ export class AuthService {
   setShowAuthPage(show: boolean) {
     this.showAuthPageSignal.set(show);
   }
+
+  clearError(): void {
+    this.errorSignal.set(null);
+  }
 }

@@ -1,13 +1,14 @@
 <div class="app">
   <app-nav-bar (myDuaClicked)="onMyDuaClicked()" (authClicked)="onAuthClicked()"></app-nav-bar>
 
-  <!-- Main site components always visible -->
   <app-input-section></app-input-section>
   <app-dua-result></app-dua-result>
 
-  <!-- Auth page overlay when needed -->
-  <app-auth-page *ngIf="authService.showAuthPage()"></app-auth-page>
+  @if (authService.showAuthPage()) {
+    <app-auth-page></app-auth-page>
+  }
 
-  <!-- Saved duas modal when needed -->
-  <app-saved-duas-modal *ngIf="showSavedDuasModal()" (close)="closeSavedDuasModal()"></app-saved-duas-modal>
+  @if (showSavedDuasModal()) {
+    <app-saved-duas-modal (close)="closeSavedDuasModal()"></app-saved-duas-modal>
+  }
 </div>
