@@ -1,0 +1,20 @@
+<section class="form-panel">
+  <h2>Create an Account</h2>
+
+  <form (ngSubmit)="register()">
+    <label for="register-username">Username</label>
+    <input id="register-username" type="text" [(ngModel)]="username" name="username" required />
+
+    <label for="register-email">Email</label>
+    <input id="register-email" type="email" [(ngModel)]="email" name="email" required />
+
+    <label for="register-password">Password</label>
+    <input id="register-password" type="password" [(ngModel)]="password" name="password" required />
+
+    <button type="submit" [disabled]="authService.loading()">Register</button>
+  </form>
+
+  <p class="message success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="message error" *ngIf="!errorMessage && authService.error()">{{ authService.error() }}</p>
+</section>

@@ -1,9 +1,38 @@
 <div class="nav-container">
-    <img src="/hands.png" alt="Hands making dua">
+  <div class="nav-top">
+    <div class="nav-left">
+      <div class="brand">
+        <img src="/hands.png" alt="Hands making dua" />
+      </div>
 
-
-    <p class="quote">
+      <p class="quote">
         "I am as My servant thinks I am…"
         <span>[Hadith Qudsi]</span>
-    </p>
+      </p>
+    </div>
+
+    <div class="action-buttons">
+
+        <button class="my-dua-btn" *ngIf="authService.user()" (click)="handleMyDuaClick()">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>My Heart's Dua</span>
+      </button>
+      <div class="user-section" *ngIf="authService.user()">
+        <button class="user-icon" (click)="toggleDropdown()" [class.active]="dropdownOpen()">
+          <i class="fas fa-user-circle"></i>
+        </button>
+
+        <div class="user-dropdown" *ngIf="dropdownOpen()">
+          <p class="username">{{ authService.user()?.username }}</p>
+          <button class="logout-btn" (click)="logout()">Logout</button>
+        </div>
+      </div>
+
+      <div class="auth-section" *ngIf="!authService.user()">
+        <button class="auth-btn" (click)="showAuthPage()">Login / Register</button>
+      </div>
+
+
+    </div>
+  </div>
 </div>

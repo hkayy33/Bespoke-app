@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using BespokeDuaApi.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Bind to Fly's PORT (default 8080) on 0.0.0.0
@@ -21,6 +24,13 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddDbContext<BespokeDuaApi.Data.BespokeDuaDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string not found.");
+    options.UseNpgsql(connectionString);
+});
+
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddHttpClient();
 
@@ -33,6 +43,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
+app.UseMiddleware<AuthenticationMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

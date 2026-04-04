@@ -1,59 +1,247 @@
 :host {
-    display: block;
+  display: block;
 }
 
 .nav-container {
-    position: sticky;
-    top: 0;
-    z-index: 900;
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  width: 100%;
+  box-sizing: border-box;
+  background: #0F3D2E;
+  padding: 10px;
+  padding-bottom: 5px;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  img {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .title {
     width: 100%;
-    box-sizing: border-box; // important
-    background: #0F3D2E;
-    padding: 10px;
+    max-width: 280px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+    border-bottom: 2px solid #C89B3C;
+
+    h1 {
+      font-size: 26px;
+      margin: 0;
+      word-break: break-word;
+    }
+  }
+
+  .quote {
+    border-top: 2px solid #C89B3C;
+    font-size: 14px;
+    max-width: 320px;
+    line-height: 1.4;
+    color: #e8e8e8;
+    padding: 5px 10px;
+
+    span {
+      display: block;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+  }
+
+  .action-buttons {
+    position: absolute;
+    right: 16px;
+    top: 0;
+    padding: 20px;
 
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    gap: 15px;
 
-    padding-bottom: 5px;
-    color: white;
-
-    img{
-        width: 100px;
-        height: auto;
-        margin-bottom: 10px;
-        
-      
+    .user-section {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .title{
+    .user-icon {
+      background: none;
+      border: none;
+      color: #f7f4ec;
+      font-size: 36px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(200, 155, 60, 0.2);
+        transform: scale(1.1);
+      }
+
+      &.active {
+        background: rgba(200, 155, 60, 0.3);
+      }
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: 55px;
+      right: 0;
+      background: #f7f4ec;
+      border: 1px solid #c89b3c;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 10px;
+      min-width: 150px;
+      z-index: 1000;
+
+      .username {
+        margin: 0 0 10px 0;
+        font-weight: bold;
+        color: #0f3d2e;
+      }
+
+      .logout-btn {
         width: 100%;
-        max-width: 280px; // prevents overflow
-        padding-bottom: 6px;
-        margin-bottom: 6px;
+        padding: 8px;
+        background: #0f3d2e;
+        color: #f7f4ec;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
 
-        h1{
-            font-size: 26px;
-            margin: 0;
-            word-break: break-word; // prevents long text overflow
+        &:hover {
+          opacity: 0.9;
         }
-
-        border-bottom: 2px solid #C89B3C;
+      }
     }
 
-    .quote{
-        border-top: 2px solid #C89B3C;
-        font-size: 14px;
-        max-width: 320px;
-        line-height: 1.4;
-        color: #e8e8e8;
-        padding: 5px 10px;
+    .my-dua-btn {
+      background: #c89b3c;
+      color: #0f3d2e;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
 
-        span{
-            display: block;
-            font-size: 13px;
-            opacity: 0.85;
-        }
+      &:hover {
+        background: #b8903a;
+        transform: translateY(-2px);
+      }
     }
+
+    .auth-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .auth-btn {
+      background: #0f3d2e;
+      color: #f7f4ec;
+      border: 1px solid #c89b3c;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #0d3528;
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+/* Desktop only (no changes needed, just clarity) */
+@media (min-width: 901px) {
+  .nav-container {
+    position: sticky;
+  }
+}
+
+/* Tablet + mobile stack (same behavior as before) */
+@media (max-width: 900px) {
+  .nav-container {
+    .action-buttons {
+      position: relative;
+      right: auto;
+      top: auto;
+      transform: none;
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+  }
+}
+
+/* Mobile polish + FIXED centering */
+@media (max-width: 520px) {
+  .nav-container {
+    img {
+      width: 85px;
+    }
+
+    .quote {
+      font-size: 13px;
+      max-width: 300px;
+
+      span {
+        font-size: 12px;
+      }
+    }
+
+    .action-buttons {
+      width: 100%;
+      align-items: center;
+      padding: 0;
+
+      .auth-section,
+      .user-section {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      /* FIX: properly centered buttons */
+      .auth-btn,
+      .my-dua-btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 190px;
+        margin: 0 auto;
+      }
+
+      .auth-btn {
+        margin-bottom: 10px;
+      }
+
+      .user-dropdown {
+        position: static;
+        margin-top: 8px;
+        width: 100%;
+      }
+    }
+  }
 }

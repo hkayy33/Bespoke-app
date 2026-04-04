@@ -1,0 +1,17 @@
+<section class="form-panel">
+  <h2>Login</h2>
+
+  <form (ngSubmit)="login()">
+    <label for="login-email">Email</label>
+    <input id="login-email" type="email" [(ngModel)]="email" name="email" required />
+
+    <label for="login-password">Password</label>
+    <input id="login-password" type="password" [(ngModel)]="password" name="password" required />
+
+    <button type="submit" [disabled]="authService.loading()">Login</button>
+  </form>
+
+  <p class="message success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="message error" *ngIf="!errorMessage && authService.error()">{{ authService.error() }}</p>
+</section>
