@@ -1,20 +1,76 @@
 <section class="form-panel">
   <h2>Create an Account</h2>
 
-  <form (ngSubmit)="register()">
-    <label for="register-username">Username</label>
-    <input id="register-username" type="text" [(ngModel)]="username" name="username" required />
+  <form [formGroup]="form" (ngSubmit)="register()" novalidate>
+    <div class="field-group">
+      <label class="field-label" for="register-username">Username</label>
+      <input
+        id="register-username"
+        type="text"
+        formControlName="username"
+        autocomplete="username"
+        [class.input-has-error]="showFieldError(form.controls.username)"
+        class="input-control"
+      />
+      <p class="field-hint">2–100 characters. Letters, numbers, underscores, or hyphens.</p>
+      @if (usernameError(); as msg) {
+        <p class="field-error" role="alert">
+          <span class="field-error__icon" aria-hidden="true">!</span>
+          <span>{{ msg }}</span>
+        </p>
+      }
+    </div>
 
-    <label for="register-email">Email</label>
-    <input id="register-email" type="email" [(ngModel)]="email" name="email" required />
+    <div class="field-group">
+      <label class="field-label" for="register-email">Email</label>
+      <input
+        id="register-email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [class.input-has-error]="showFieldError(form.controls.email)"
+        class="input-control"
+      />
+      @if (emailError(); as msg) {
+        <p class="field-error" role="alert">
+          <span class="field-error__icon" aria-hidden="true">!</span>
+          <span>{{ msg }}</span>
+        </p>
+      }
+    </div>
 
-    <label for="register-password">Password</label>
-    <input id="register-password" type="password" [(ngModel)]="password" name="password" required />
+    <div class="field-group">
+      <label class="field-label" for="register-password">Password</label>
+      <input
+        id="register-password"
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        [class.input-has-error]="showFieldError(form.controls.password)"
+        class="input-control"
+      />
+      @if (passwordError(); as msg) {
+        <p class="field-error" role="alert">
+          <span class="field-error__icon" aria-hidden="true">!</span>
+          <span>{{ msg }}</span>
+        </p>
+      }
+    </div>
 
     <button type="submit" [disabled]="authService.loading()">Register</button>
   </form>
 
-  <p class="message success" *ngIf="successMessage">{{ successMessage }}</p>
-  <p class="message error" *ngIf="errorMessage">{{ errorMessage }}</p>
-  <p class="message error" *ngIf="!errorMessage && authService.error()">{{ authService.error() }}</p>
+  @if (successMessage) {
+    <div class="form-alert form-alert--success" role="status" aria-live="polite">
+      <span class="form-alert__icon" aria-hidden="true">&#10003;</span>
+      <div class="form-alert__body">{{ successMessage }}</div>
+    </div>
+  }
+
+  @if (serverErrorText(); as err) {
+    <div class="form-alert form-alert--error" role="alert" aria-live="assertive">
+      <span class="form-alert__icon" aria-hidden="true">!</span>
+      <div class="form-alert__body">{{ err }}</div>
+    </div>
+  }
 </section>

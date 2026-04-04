@@ -1,40 +1,34 @@
-import { Component, Input, signal, computed, OnInit } from '@angular/core';
+import { Component, Input, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DuaReciever } from '../../../domain/models/dua-reciever';
-import { AuthService } from '../../../domain/services/auth.service';
 import { DuaService } from '../../../domain/services/dua.service';
+import { AuthService } from '../../../domain/services/auth.service';
 
 @Component({
-  standalone: true,
   selector: 'app-dua-result-card',
   imports: [CommonModule],
   templateUrl: './dua-result-card.html',
-  styleUrls: ['./dua-result-card.scss'],
+  styleUrl: './dua-result-card.scss',
 })
-export class DuaResultCard implements OnInit {
+export class DuaResultCard {
+  private duaService = inject(DuaService);
+  private authService = inject(AuthService);
+
   copied = false;
   showAimModal = signal(false);
-  isSaved = signal(false);
-  saving = signal(false);
 
-  @Input() dua!: DuaReciever;
-  @Input() savedDuaId?: string;
+  /** Set when this card is showing an item from the saved list (already persisted). */
+  @Input() savedDuaId: string | null = null;
 
-  constructor(
-    private authService: AuthService,
-    private duaService: DuaService
-  ) {}
+  @Input({ required: true }) dua!: DuaReciever;
 
-  ngOnInit() {
-    // If savedDuaId is provided, this dua is already saved
-    if (this.savedDuaId) {
-      this.isSaved.set(true);
-    }
+  private savedIdAfterPost = signal<string | null>(null);
+
+  isSaved(): boolean {
+    return !!this.savedDuaId || !!this.savedIdAfterPost();
   }
 
-  isLoggedIn = computed(() => !!this.authService.user());
-
-  copyToClipboard(text: string) {
+  copyToClipboard(text: string): void {
     this.copied = true;
     setTimeout(() => {
       this.copied = false;
@@ -47,49 +41,33 @@ export class DuaResultCard implements OnInit {
     }
   }
 
-  toggleSave() {
-    if (!this.isLoggedIn()) {
+  toggleSave(): void {
+    if (!this.authService.user()) {
       this.authService.setShowAuthPage(true);
       return;
     }
 
-    if (this.saving()) return;
+    const user = this.authService.user()!;
+    const persistedId = this.savedDuaId ?? this.savedIdAfterPost();
 
-    this.saving.set(true);
-
-    if (this.isSaved()) {
-      // Unsave
-      if (this.savedDuaId) {
-        this.duaService.deleteSavedDua(this.savedDuaId).subscribe({
-          next: () => {
-            this.isSaved.set(false);
-            this.saving.set(false);
-          },
-          error: () => {
-            this.saving.set(false);
-          }
-        });
-      }
-    } else {
-      // Save
-      const user = this.authService.user();
-      if (user) {
-        this.duaService.saveDua({
-          userId: user.userId,
-          dua: JSON.stringify(this.dua)
-        }).subscribe({
-          next: (savedDua) => {
-            if (savedDua) {
-              this.isSaved.set(true);
-              this.savedDuaId = savedDua.duaId;
-            }
-            this.saving.set(false);
-          },
-          error: () => {
-            this.saving.set(false);
-          }
-        });
-      }
+    if (persistedId) {
+      this.duaService.deleteSavedDua(persistedId).subscribe(() => {
+        if (!this.savedDuaId) {
+          this.savedIdAfterPost.set(null);
+        }
+      });
+      return;
     }
+
+    const payload = JSON.stringify({
+      duaText: this.dua.duaText,
+      explanations: this.dua.explanations,
+    });
+
+    this.duaService.saveDua({ userId: user.userId, dua: payload }).subscribe((saved) => {
+      if (saved?.duaId) {
+        this.savedIdAfterPost.set(saved.duaId);
+      }
+    });
   }
 }

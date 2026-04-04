@@ -1,6 +1,4 @@
 import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { NavBar } from './shared/nav-bar/nav-bar';
 import { InputSection } from './components/input-section/input-section';
 import { DuaResult } from './components/dua-result/dua-result';
@@ -10,29 +8,29 @@ import { AuthService } from './domain/services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, HttpClientModule, NavBar, InputSection, DuaResult, AuthPage, SavedDuasModal],
+  imports: [NavBar, InputSection, DuaResult, AuthPage, SavedDuasModal],
   templateUrl: './app.html',
-  styleUrls: ['./app.scss']
+  styleUrl: './app.scss',
 })
 export class App {
   protected readonly title = signal('bespoke-dua-client');
-  showSavedDuasModal = signal(false);
+  protected readonly showSavedDuasModal = signal(false);
 
-  constructor(public authService: AuthService) {}
+  constructor(protected authService: AuthService) {}
 
-  onMyDuaClicked() {
-    if (this.authService.user()) {
-      this.showSavedDuasModal.set(true);
-    } else {
+  onMyDuaClicked(): void {
+    if (!this.authService.user()) {
       this.authService.setShowAuthPage(true);
+      return;
     }
+    this.showSavedDuasModal.set(true);
   }
 
-  onAuthClicked() {
+  onAuthClicked(): void {
     this.authService.setShowAuthPage(true);
   }
 
-  closeSavedDuasModal() {
+  closeSavedDuasModal(): void {
     this.showSavedDuasModal.set(false);
   }
 }

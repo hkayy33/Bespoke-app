@@ -1,23 +1,26 @@
 .modal-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
   z-index: 1000;
   backdrop-filter: blur(2px);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .modal-content {
   position: relative;
-  max-width: 800px;
-  width: 95vw;
-  max-height: 90vh;
+  width: min(800px, 100%);
+  max-height: calc(100dvh - 2rem);
   overflow-y: auto;
+  box-sizing: border-box;
   background: rgba(247, 244, 236, 0.98);
   border-radius: 1.5rem;
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.18);
@@ -84,6 +87,45 @@
   }
 }
 
+.sample-card {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  background: rgba(247, 244, 236, 0.95);
+  border: 1px solid rgba(15, 61, 46, 0.12);
+  box-shadow: 0 12px 24px rgba(15, 61, 46, 0.08);
+
+  .sample-card-content {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .sample-dua-text {
+    margin: 0;
+    color: #0f3d2e;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .sample-explanations {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .sample-explanation {
+    display: flex;
+    gap: 0.4rem;
+    align-items: baseline;
+    color: #4e5d4d;
+    font-size: 0.93rem;
+  }
+
+  .sample-exp-name {
+    color: #0f3d2e;
+    font-weight: 600;
+  }
+}
+
 .loading {
   text-align: center;
   padding: 3rem;
@@ -113,30 +155,109 @@
   }
 }
 
-@media (max-width: 600px) {
+/* Tablet */
+@media (max-width: 900px) {
+  .modal-backdrop {
+    padding: 1rem;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
   .modal-content {
-    width: 98vw;
-    max-height: 95vh;
+    width: min(720px, 100%);
+    max-height: calc(100dvh - 10rem);
+    margin-top: 5rem;
     padding: 1.5rem;
+    border-radius: 1.2rem;
+
   }
 
   .modal-header {
     margin-bottom: 1.5rem;
+    padding-bottom: 0.85rem;
 
     h2 {
-      font-size: 1.5rem;
+      font-size: 1.55rem;
+    }
+
+    p {
+      font-size: 0.95rem;
     }
   }
 
   .saved-duas-list {
-    gap: 1rem;
+    gap: 1.1rem;
+  }
+
+  .empty-state {
+    padding: 2rem 1.25rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .modal-backdrop {
+    padding: 0.75rem;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-height: calc(100dvh - 4rem);
+    margin-top: 2rem;
+    padding: 2rem 1rem 1rem;
+    border-radius: 1rem;
+    
+  }
+
+  .modal-header {
+    margin-bottom: 1.15rem;
+    padding-bottom: 0.75rem;
+
+    h2 {
+      font-size: 1.35rem;
+      padding: 0 2.25rem 0 0.5rem;
+    }
+
+    p {
+      font-size: 0.92rem;
+      padding: 0 0.25rem;
+    }
+  }
+
+  .saved-duas-list {
+    gap: 0.9rem;
+  }
+
+  .saved-dua-item {
+    .date {
+      font-size: 0.82rem;
+    }
+  }
+
+  .loading {
+    padding: 2rem 1rem;
+    font-size: 1rem;
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+
+    i {
+      font-size: 2.4rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
   }
 
   .modal-close {
-    top: 0.5rem;
-    right: 0.5rem;
-    width: 35px;
-    height: 35px;
-    font-size: 14px;
+    top: 0.65rem;
+    right: 0.65rem;
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
   }
 }
