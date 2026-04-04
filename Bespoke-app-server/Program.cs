@@ -33,6 +33,7 @@ builder.Services.AddDbContext<BespokeDuaApi.Data.BespokeDuaDbContext>(options =>
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<BespokeDuaApi.Services.UsageService>();
 
 var app = builder.Build();
 
