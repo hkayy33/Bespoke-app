@@ -29,8 +29,8 @@ namespace BespokeDuaApi.Controllers
                 return NotFound();
             }
 
-            var today = DateTime.UtcNow.Date;
-            var monthStart = new DateTime(today.Year, today.Month, 1);
+            var today = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
+            var monthStart = new DateTime(today.Year, today.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
             var dailyRequests = await _context.UserUsages
                 .AsNoTracking()

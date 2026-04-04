@@ -1,3 +1,4 @@
-export interface DuaSender{
-    inputtedDuaText : string
+export interface DuaSender {
+  inputtedDuaText: string;
+  userId?: number;
 }

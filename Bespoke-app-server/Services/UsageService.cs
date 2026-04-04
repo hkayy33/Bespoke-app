@@ -13,16 +13,23 @@ namespace BespokeDuaApi.Services
             _context = context;
         }
 
+        private static DateTime UtcToday => DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
+
+        private static DateTime MonthStartUtc(DateTime utcDay)
+        {
+            return new DateTime(utcDay.Year, utcDay.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+
         public async Task IncrementUsageAsync(int userId)
         {
             var now = DateTime.UtcNow;
-            var today = now.Date;
+            var today = UtcToday;
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
             {
-                throw new Exception("User not found.");
+                throw new KeyNotFoundException("User not found.");
             }
 
             var usage = await _context.UserUsages
@@ -45,13 +52,20 @@ namespace BespokeDuaApi.Services
             }
 
             user.LastRequestDate = now;
+            user.DailyRequests = usage.RequestsCount;
+
+            var monthStart = MonthStartUtc(today);
+            var monthlyBeforeToday = await _context.UserUsages
+                .Where(u => u.UserId == userId && u.Date >= monthStart && u.Date < today)
+                .SumAsync(u => (int?)u.RequestsCount) ?? 0;
+            user.MonthlyRequests = monthlyBeforeToday + usage.RequestsCount;
 
             await _context.SaveChangesAsync();
         }
 
         public async Task<int> GetDailyUsageAsync(int userId)
         {
-            var today = DateTime.UtcNow.Date;
+            var today = UtcToday;
 
             return await _context.UserUsages
                 .Where(u => u.UserId == userId && u.Date == today)
@@ -61,8 +75,8 @@ namespace BespokeDuaApi.Services
 
         public async Task<int> GetMonthlyUsageAsync(int userId)
         {
-            var today = DateTime.UtcNow.Date;
-            var monthStart = new DateTime(today.Year, today.Month, 1);
+            var today = UtcToday;
+            var monthStart = MonthStartUtc(today);
 
             return await _context.UserUsages
                 .Where(u => u.UserId == userId && u.Date >= monthStart && u.Date <= today)

@@ -34,7 +34,8 @@ export class InputSection {
 
     this.duaService.clearDuas();
 
-    this.duaService.generateDuas({ inputtedDuaText: trimmed })
+    const user = this.authService.user()!;
+    this.duaService.generateDuas({ inputtedDuaText: trimmed, userId: user.userId })
       .subscribe(() => {
         this.text = '';
       });

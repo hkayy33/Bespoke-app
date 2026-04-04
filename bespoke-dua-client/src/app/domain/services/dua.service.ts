@@ -40,7 +40,10 @@ export class DuaService {
           dua: string;
           explanations: Array<{ name: string; explanation: string }>;
         }>;
-      }>(`${this.baseUrl}/generate`, { text: inputtedDua.inputtedDuaText })
+      }>(`${this.baseUrl}/generate`, {
+        text: inputtedDua.inputtedDuaText,
+        ...(inputtedDua.userId != null ? { userId: inputtedDua.userId } : {}),
+      })
       .pipe(
           map((res) =>
           res.duas.map(
