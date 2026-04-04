@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common';
 import { DuaReciever } from '../../../domain/models/dua-reciever';
 
 @Component({
+  standalone: true,
   selector: 'app-dua-result-list',
   imports: [DuaResultCard, CommonModule],
   templateUrl: './dua-result-list.html',
-  styleUrl: './dua-result-list.scss',
+  styleUrls: ['./dua-result-list.scss'],
 })
 export class DuaResultList {
   // duas : DuaReciever[] = []
@@ -24,6 +25,5 @@ export class DuaResultList {
 
   clearList(): void {
     this.duaService.clearDuas();
-
   }
 }
