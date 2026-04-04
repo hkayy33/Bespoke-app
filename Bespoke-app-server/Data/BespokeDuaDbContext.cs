@@ -71,7 +71,8 @@ namespace BespokeDuaApi.Data
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Date)
-                      .IsRequired();
+                      .IsRequired()
+                      .HasColumnType("date");
 
                 entity.Property(e => e.RequestsCount)
                       .IsRequired();
