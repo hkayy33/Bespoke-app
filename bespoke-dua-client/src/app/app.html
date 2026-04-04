@@ -7,4 +7,7 @@
 
   <!-- Auth page overlay when needed -->
   <app-auth-page *ngIf="authService.showAuthPage()"></app-auth-page>
+
+  <!-- Saved duas modal when needed -->
+  <app-saved-duas-modal *ngIf="showSavedDuasModal()" (close)="closeSavedDuasModal()"></app-saved-duas-modal>
 </div>
