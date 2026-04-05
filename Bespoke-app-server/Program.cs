@@ -14,6 +14,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:4200",
+            "http://192.168.1.40:4200",
             "https://bespoke-dua-client.vercel.app",
             "https://www.bespokedua.com"
         )
