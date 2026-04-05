@@ -1,0 +1,38 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="auth-card">
+      <div class="auth-toggle">
+        <button
+          type="button"
+          (click)="selectTab('login')"
+          [class.active]="activeTab() === 'login'">
+          Login
+        </button>
+
+        <button
+          type="button"
+          (click)="selectTab('register')"
+          [class.active]="activeTab() === 'register'">
+          Register
+        </button>
+      </div>
+
+      <div class="auth-form-container">
+        <app-login-page *ngIf="activeTab() === 'login'"></app-login-page>
+        <app-register-page *ngIf="activeTab() === 'register'"></app-register-page>
+      </div>
+
+      <div class="auth-status" *ngIf="authService.user()">
+        <span>
+          Signed in as <strong>{{ authService.user()?.username }}</strong>
+        </span>
+        <button
+          type="button"
+          class="logout-button"
+          (click)="authService.logout()">
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

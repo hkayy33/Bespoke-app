@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using BespokeDuaApi.Models;
+using BespokeDuaApi.Services;
 using Newtonsoft.Json;
 using System.Text;
 using System.Linq;
@@ -15,13 +16,21 @@ public class DuaController : ControllerBase
 {
     private readonly IConfiguration _config;
     private readonly HttpClient _httpClient;
+    private readonly UsageService _usageService;
+    private readonly ILogger<DuaController> _logger;
 
     private const string GeminiUrl =
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
-    public DuaController(IConfiguration config, IHttpClientFactory factory)
+    public DuaController(
+        IConfiguration config,
+        IHttpClientFactory factory,
+        UsageService usageService,
+        ILogger<DuaController> logger)
     {
         _config = config;
+        _usageService = usageService;
+        _logger = logger;
         _httpClient = factory.CreateClient();
         _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", _config["GeminiApiKey"]);
     }
@@ -41,7 +50,10 @@ public class DuaController : ControllerBase
             var result = await TryGenerateDua(request.Text, attempt);
 
             if (result.Success && result.Response != null)
+            {
+                await RecordUsageForUserIfPresentAsync(request.UserId);
                 return Ok(result.Response);
+            }
 
             lastRaw = result.Raw ?? string.Empty;
             lastError = result.Error ?? "Unknown error";
@@ -53,6 +65,25 @@ public class DuaController : ControllerBase
             error = lastError,
             raw = lastRaw
         });
+    }
+
+    private async Task RecordUsageForUserIfPresentAsync(int? userId)
+    {
+        if (userId is not int id || id <= 0)
+        {
+            _logger.LogInformation(
+                "Dua generated successfully; usage not updated because userId was missing or invalid in the request body.");
+            return;
+        }
+
+        try
+        {
+            await _usageService.IncrementUsageAsync(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to record usage for user {UserId}", id);
+        }
     }
 
     private async Task<(bool Success, DuaResponse? Response, string? Raw, string? Error)> TryGenerateDua(string userText, int attempt)
@@ -390,4 +421,4 @@ User request:
 
         return results;
     }
-}
+    }
