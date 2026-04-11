@@ -1,5 +1,6 @@
+using BespokeDuaApi.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using BespokeDuaApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,13 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<BespokeDuaApi.Services.UsageService>();
 
+builder.Services
+    .AddAuthentication(UserIdBearerAuthenticationHandler.SchemeName)
+    .AddScheme<AuthenticationSchemeOptions, UserIdBearerAuthenticationHandler>(
+        UserIdBearerAuthenticationHandler.SchemeName,
+        _ => { });
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure HTTP pipeline
@@ -50,8 +58,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-app.UseMiddleware<AuthenticationMiddleware>();
-app.UseHttpsRedirection();
+// No UseHttpsRedirection: Kestrel listens on HTTP only (see UseUrls above). In Development there is no
+// HTTPS port, which triggers HttpsRedirectionMiddleware's "Failed to determine the https port" warning
+// and can break API clients. On Fly, TLS terminates at the edge; traffic to the process stays HTTP.
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
