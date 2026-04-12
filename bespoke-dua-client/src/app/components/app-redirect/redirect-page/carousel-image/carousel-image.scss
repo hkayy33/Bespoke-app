@@ -1,0 +1,61 @@
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Single slide: use most of the carousel width (cqw from app-carousel) */
+.slide {
+  position: relative;
+  box-sizing: border-box;
+  width: clamp(7.25rem, 68vw, 16.5rem);
+  flex: 0 0 clamp(7.25rem, 68vw, 16.5rem);
+  height: clamp(10.9rem, 102vw, 24.75rem);
+  max-width: 100%;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  isolation: isolate;
+  /* Warm wash aligned with hero (#eef2eb / #f6f4ef) so the frame melts into the page */
+  background: radial-gradient(
+      120% 85% at 50% 100%,
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 55%
+    ),
+    linear-gradient(
+      168deg,
+      rgba(247, 244, 236, 0.88) 0%,
+      rgba(238, 242, 235, 0.65) 42%,
+      rgba(246, 244, 239, 0.45) 100%
+    );
+
+  /* Soft edge bloom: eases hard rectangle / letterboxing into the slide fill */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 48px 20px rgba(247, 244, 236, 0.75),
+      inset 0 -28px 56px -12px rgba(238, 242, 235, 0.5);
+  }
+
+  img {
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    display: block;
+  }
+}
+
+@supports (width: 1cqw) {
+  .slide {
+    width: clamp(7.25rem, min(72cqw, 50vw), 18rem);
+    flex: 0 0 clamp(7.25rem, min(72cqw, 50vw), 18rem);
+    height: clamp(10.9rem, min(108cqw, 75vw), 27rem);
+  }
+}

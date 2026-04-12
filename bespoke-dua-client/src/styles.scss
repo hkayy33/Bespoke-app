@@ -27,8 +27,5 @@ app-root {
   display: block;
 }
 
-.app {
-  display: block;
-  min-height: 100dvh;
-}
+/* .app layout lives in app.component.scss (flex column + min-height) */
 

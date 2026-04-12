@@ -1,0 +1,89 @@
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Match nav bar colour — compact strip, sits below hero when you scroll */
+.footer {
+  box-sizing: border-box;
+  padding: clamp(1.35rem, 3.5vw, 1.65rem) clamp(1.25rem, 4vw, 2.5rem)
+    clamp(1.45rem, 3.8vw, 1.85rem);
+  background: #0f3d2e;
+  color: #f7f4ec;
+  border-top: 1px solid rgba(200, 155, 60, 0.22);
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.footer__content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.footer__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c89b3c;
+}
+
+.footer__title {
+  margin: 0 0 0.4rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.15rem, 2.8vw, 1.4rem);
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.footer__lede {
+  margin: 0 0 clamp(0.95rem, 2.5vw, 1.2rem);
+  padding-top: clamp(0.55rem, 1.8vw, 0.75rem);
+  border-top: 1px solid rgba(200, 155, 60, 0.45);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #d4d4d4;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.65rem, 2vw, 0.9rem);
+}
+
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.65rem;
+  height: 2.65rem;
+  padding: 0;
+  border-radius: 50%;
+  text-decoration: none;
+  color: #e8c56e;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(200, 155, 60, 0.35);
+  font-size: 1.2rem;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(200, 155, 60, 0.55);
+    transform: translateY(-2px);
+    color: #f5d78a;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #c89b3c;
+    outline-offset: 2px;
+  }
+}
