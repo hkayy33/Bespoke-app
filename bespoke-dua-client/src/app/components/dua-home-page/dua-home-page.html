@@ -1,0 +1,31 @@
+@if (showWhatsNewModal()) {
+  <div
+    class="whats-new-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="whats-new-title"
+    (click)="dismissWhatsNew()">
+    <div class="whats-new-dialog" (click)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="whats-new-close"
+        (click)="dismissWhatsNew()"
+        aria-label="Close">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <div class="whats-new-badge">Update</div>
+      <h2 id="whats-new-title" class="whats-new-title">What&rsquo;s new?</h2>
+      <p class="whats-new-lead">
+        We&rsquo;ve introduced the feature to save your heartfelt duas to your account.
+      </p>
+      <p class="whats-new-detail">
+        After you sign in, use the bookmark on each dua to keep it in
+        <strong>My Heart&rsquo;s Duas</strong> and revisit it anytime from the menu.
+      </p>
+      <button type="button" class="whats-new-cta" (click)="dismissWhatsNew()">Got it</button>
+    </div>
+  </div>
+}
+
+<app-input-section></app-input-section>
+<app-dua-result></app-dua-result>
