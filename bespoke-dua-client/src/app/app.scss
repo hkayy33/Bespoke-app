@@ -1,113 +1,19 @@
 .app {
-  min-height: 100%;
-}
-
-.whats-new-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 950;
+  min-height: 100dvh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(3px);
+  flex-direction: column;
 }
 
-.whats-new-dialog {
-  position: relative;
-  width: 100%;
-  max-width: 420px;
-  padding: 1.75rem 1.75rem 1.5rem;
-  border-radius: 1.35rem;
-  background: rgba(247, 244, 236, 0.98);
-  border: 1px solid rgba(15, 61, 46, 0.2);
-  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.22);
-  box-sizing: border-box;
-}
-
-.whats-new-close {
-  position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
-  width: 2.25rem;
-  height: 2.25rem;
-  border: none;
-  border-radius: 50%;
-  background: rgba(15, 61, 46, 0.08);
-  color: #0f3d2e;
-  cursor: pointer;
+.app-main {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: rgba(15, 61, 46, 0.14);
-  }
+  flex-direction: column;
 }
 
-.whats-new-badge {
-  display: inline-block;
-  margin-bottom: 0.75rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #0f3d2e;
-  background: rgba(200, 155, 60, 0.35);
-  border: 1px solid rgba(200, 155, 60, 0.5);
-}
-
-.whats-new-title {
-  margin: 0 0 0.85rem;
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: #0f3d2e;
-  line-height: 1.2;
-  padding-right: 2rem;
-}
-
-.whats-new-lead {
-  margin: 0 0 0.85rem;
-  font-size: 1.05rem;
-  line-height: 1.5;
-  color: #1a3328;
-  font-weight: 600;
-}
-
-.whats-new-detail {
-  margin: 0 0 1.35rem;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: rgba(26, 51, 40, 0.88);
-}
-
-.whats-new-cta {
-  width: 100%;
-  padding: 0.95rem 1rem;
-  border: none;
-  border-radius: 999px;
-  background: #0f3d2e;
-  color: #f7f4ec;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 0.92;
-  }
-}
-
-@media (max-width: 480px) {
-  .whats-new-dialog {
-    padding: 1.5rem 1.25rem 1.25rem;
-  }
-
-  .whats-new-title {
-    font-size: 1.4rem;
-  }
+.app-main > router-outlet + * {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
