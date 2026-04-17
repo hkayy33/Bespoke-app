@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 
+# Local tooling (e.g. rembg venv for asset processing)
+/.venv-bg
+
 # Node
 /node_modules
 npm-debug.log

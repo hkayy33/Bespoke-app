@@ -1,4 +1,4 @@
-<div class="app">
+<!-- <div class="app">
   @if (showWhatsNewModal()) {
     <div
       class="whats-new-backdrop"
@@ -28,7 +28,7 @@
     </div>
   }
 
-  <app-nav-bar (myDuaClicked)="onMyDuaClicked()" (authClicked)="onAuthClicked()"></app-nav-bar>
+  <app-nav-bar (myDuaClicked)="onMyDuaClicked()"></app-nav-bar>
 
   <app-input-section></app-input-section>
   <app-dua-result></app-dua-result>
@@ -40,4 +40,11 @@
   @if (showSavedDuasModal()) {
     <app-saved-duas-modal (close)="closeSavedDuasModal()"></app-saved-duas-modal>
   }
+</div> -->
+
+<div class="app">
+  <app-nav-bar></app-nav-bar>
+  <main class="app-main">
+    <router-outlet />
+  </main>
 </div>

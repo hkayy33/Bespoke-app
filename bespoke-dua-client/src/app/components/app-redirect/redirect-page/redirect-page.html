@@ -1,0 +1,87 @@
+<div class="page">
+  <div class="hero">
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="hero__hex" aria-hidden="true"></div>
+
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <div class="hero__copy-card">
+          <h1 class="hero__title">Personalise your heart’s duas</h1>
+          <p class="hero__tagline">
+            Write, reflect, and carry heartfelt supplications crafted for you — save, revisit, and make
+            them yours.
+          </p>
+          <div class="hero__downloads">
+            <a
+              class="hero__cta"
+              [href]="appStoreUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download now
+            </a>
+            <a
+              class="hero__store-badge-link"
+              [href]="appStoreUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                class="hero__store-badge"
+                src="/images/download-on-the-app-store.svg"
+                alt="Download on the App Store"
+                width="180"
+                height="60"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__visual">
+        <app-carousel></app-carousel>
+      </div>
+    </div>
+  </div>
+
+  <section class="flow" aria-labelledby="flow-heading">
+    <div class="flow__inner">
+      <h2 id="flow-heading" class="flow__eyebrow">
+        Personalised duas powered by the names of Allah
+      </h2>
+      <ol class="flow__list">
+        <li class="flow__step">
+          <span class="flow__icon" aria-hidden="true">
+            <i class="fa-solid fa-pencil"></i>
+          </span>
+          <div class="flow__copy">
+            <span class="flow__title">Write your intention</span>
+            <span class="flow__desc">Write your heartfelt du&apos;a</span>
+          </div>
+        </li>
+        <li class="flow__connector" aria-hidden="true"></li>
+        <li class="flow__step">
+          <span class="flow__icon" aria-hidden="true">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </span>
+          <div class="flow__copy">
+            <span class="flow__title">Receive 3 bespoke duas</span>
+            <span class="flow__desc">Crafted with Allah&apos;s names</span>
+          </div>
+        </li>
+        <li class="flow__connector" aria-hidden="true"></li>
+        <li class="flow__step">
+          <span class="flow__icon" aria-hidden="true">
+            <i class="fa-solid fa-book-open"></i>
+          </span>
+          <div class="flow__copy">
+            <span class="flow__title">Learn the names used</span>
+            <span class="flow__desc">Understand the meaning behind your du&apos;a</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <app-footer></app-footer>
+</div>

@@ -1,0 +1,50 @@
+<section
+  class="showcase"
+  aria-roledescription="carousel"
+  aria-label="App screenshots"
+>
+  <div class="viewport">
+    <button
+      type="button"
+      class="nav nav--prev"
+      (click)="prev()"
+      aria-label="Previous slide"
+    >
+      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+    </button>
+
+    <div class="slides" role="group" aria-label="App screenshots" aria-live="polite">
+      @if (slides.length > 0) {
+        <div class="slide-slot">
+          <app-carousel-image
+            [imageUrl]="slides[currentIndex].src"
+            [alt]="slides[currentIndex].alt"
+          />
+        </div>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="nav nav--next"
+      (click)="next()"
+      aria-label="Next slide"
+    >
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div class="dots" role="tablist" aria-label="Slide">
+    @for (_ of slides; track $index) {
+      <button
+        type="button"
+        class="dot"
+        role="tab"
+        [attr.aria-selected]="currentIndex === $index"
+        [attr.aria-label]="'Slide ' + ($index + 1) + ' of ' + slides.length"
+        [class.dot--active]="currentIndex === $index"
+        (click)="goTo($index)"
+      ></button>
+    }
+  </div>
+</section>

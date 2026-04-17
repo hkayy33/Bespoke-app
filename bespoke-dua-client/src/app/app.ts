@@ -1,9 +1,6 @@
 import { Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { NavBar } from './shared/nav-bar/nav-bar';
-import { InputSection } from './components/input-section/input-section';
-import { DuaResult } from './components/dua-result/dua-result';
-import { AuthPage } from './components/auth-page/auth-page';
-import { SavedDuasModal } from './components/saved-duas-modal/saved-duas-modal';
 import { AuthService } from './domain/services/auth.service';
 
 /** Bump suffix (e.g. v2) when you want the modal to show again for everyone. */
@@ -11,7 +8,8 @@ const WHATS_NEW_STORAGE_KEY = 'bespoke-dua-whats-new-v1';
 
 @Component({
   selector: 'app-root',
-  imports: [NavBar, InputSection, DuaResult, AuthPage, SavedDuasModal],
+  standalone: true,
+  imports: [NavBar, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -39,10 +37,6 @@ export class App {
       return;
     }
     this.showSavedDuasModal.set(true);
-  }
-
-  onAuthClicked(): void {
-    this.authService.setShowAuthPage(true);
   }
 
   closeSavedDuasModal(): void {
