@@ -13,6 +13,7 @@ namespace BespokeDuaApi.Data
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<SavedDua> SavedDuas { get; set; } = null!;
         public DbSet<UserUsage> UserUsages { get; set; } = null!;
+        public DbSet<SubscriptionOwnership> SubscriptionOwnerships { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -79,6 +80,25 @@ namespace BespokeDuaApi.Data
 
                 entity.HasIndex(e => new { e.UserId, e.Date })
                       .IsUnique();
+            });
+
+            modelBuilder.Entity<SubscriptionOwnership>(entity =>
+            {
+                entity.ToTable("SubscriptionOwnerships");
+                entity.HasKey(e => e.SubscriptionOwnershipId);
+
+                entity.Property(e => e.SubscriptionOwnershipId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.OriginalTransactionId).IsRequired().HasMaxLength(128);
+                entity.Property(e => e.ProductId).IsRequired().HasMaxLength(256);
+                entity.Property(e => e.CreatedAt).IsRequired();
+
+                entity.HasIndex(e => e.OriginalTransactionId).IsUnique();
+
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
