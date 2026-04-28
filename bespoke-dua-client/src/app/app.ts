@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavBar } from './shared/nav-bar/nav-bar';
 import { Footer } from './shared/footer/footer';
@@ -15,12 +15,18 @@ import { AuthService } from './domain/services/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
+export class App implements OnInit {
   protected readonly title = signal('bespoke-dua-client');
   protected readonly showSavedDuasModal = signal(false);
   protected readonly showUserProfileModal = signal(false);
 
   constructor(protected authService: AuthService) {}
+
+  ngOnInit(): void {
+    if (this.authService.user()) {
+      this.authService.validateStoredSession().subscribe();
+    }
+  }
 
   onMyDuaClicked(): void {
     if (!this.authService.user()) {
