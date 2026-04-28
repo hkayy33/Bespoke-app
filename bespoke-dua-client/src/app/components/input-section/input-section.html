@@ -4,6 +4,16 @@
         <button type="button" class="aim" (click)="showAimModal.set(true)">
             The Aim ?
         </button>
+        @if (hasUser()) {
+            <div class="duas-left-badge" [class.loading]="isUsageLoading()">
+                {{ remainingDuasText() }}
+                @if (!isSubscribedPlan()) {
+                    <button type="button" class="usage-info-btn" (click)="showUsageInfoModal.set(true)" aria-label="Daily duas info">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                }
+            </div>
+        }
     </div>
 
     @if (showAimModal()) {
@@ -24,13 +34,26 @@
         </div>
     }
 
+    @if (showUsageInfoModal()) {
+        <div class="modal-backdrop" (click)="showUsageInfoModal.set(false)">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <button type="button" class="modal-close" (click)="showUsageInfoModal.set(false)" aria-label="Close">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+                <p>
+                    Free plan users get access to 7 daily duas to ensure fair use of service, upgrade to BespokeDua Plus to get unlimited duas.
+                </p>
+            </div>
+        </div>
+    }
+
     <div class="input-group">
         <textarea #inputText placeholder="Type your dua here..." [(ngModel)]="text">{{text}}</textarea>
     </div>
 
     <span class="example-text">Example: “Oh Allah, grant me success in…”</span>
 
-    <button (click)="submitDua(inputText.value)" [disabled]="duaService.loading()">
+    <button (click)="submitDua(inputText.value)" [disabled]="isSubmitDisabled()">
         {{ duaService.loading() ? 'Generating...' : 'Bespoke My Dua' }}
     </button>
 

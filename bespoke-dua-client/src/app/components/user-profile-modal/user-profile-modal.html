@@ -1,0 +1,88 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button type="button" class="modal-close" (click)="closeModal()" aria-label="Close account panel">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="profile-head">
+      <div class="avatar">{{ avatarInitials() }}</div>
+      <div class="identity">
+        <h2>{{ authService.user()?.username }}</h2>
+        <p class="email">{{ authService.user()?.email }}</p>
+      </div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-row">
+        <span class="status-label">Current plan</span>
+        <span class="plan-pill">{{ planLabel() }}</span>
+      </div>
+
+      @if (loading()) {
+        <p class="usage">Loading usage...</p>
+      } @else {
+        <p class="usage">{{ usageText() }}</p>
+      }
+    </div>
+
+    <div class="actions">
+      @if (!isSubscribedPlan()) {
+        <button type="button" class="upgrade-btn" (click)="onUpgrade()">
+          <i class="fas fa-star"></i>
+          Upgrade plan (coming soon)
+        </button>
+      }
+
+      <div class="delete-section__divider" aria-hidden="true"></div>
+
+      @if (!showLogoutConfirm()) {
+        <button type="button" class="logout-btn" (click)="beginLogout()">
+          <i class="fas fa-right-from-bracket"></i>
+          Log out
+        </button>
+      } @else {
+        <div class="logout-confirm">
+          <p class="logout-confirm__title">Are you sure you want to log out ?</p>
+          <p class="logout-confirm__text">You can sign in again anytime.</p>
+          <div class="logout-confirm__actions">
+            <button type="button" class="cancel-logout-btn" (click)="cancelLogout()">Cancel</button>
+            <button type="button" class="confirm-logout-btn" (click)="confirmLogout()">Yes, log out</button>
+          </div>
+        </div>
+      }
+
+      <div class="delete-section">
+        @if (!showDeleteConfirm()) {
+          <button
+            type="button"
+            class="delete-btn"
+            (click)="beginDeleteAccount()"
+            [disabled]="deleteInProgress()">
+            Delete account
+          </button>
+        } @else {
+          <div class="delete-confirm">
+            <p class="delete-confirm__title">Delete account permanently?</p>
+            <p class="delete-confirm__text">This action cannot be undone.</p>
+            <div class="delete-confirm__actions">
+              <button
+                type="button"
+                class="cancel-delete-btn"
+                (click)="cancelDeleteAccount()"
+                [disabled]="deleteInProgress()">
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="confirm-delete-btn"
+                (click)="confirmDeleteAccount()"
+                [disabled]="deleteInProgress()">
+                {{ deleteInProgress() ? 'Deleting...' : 'Yes, delete account' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

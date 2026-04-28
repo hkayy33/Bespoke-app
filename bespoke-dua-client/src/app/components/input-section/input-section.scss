@@ -12,6 +12,7 @@
         flex-direction: column;
         align-items: center;
         padding-bottom: 10px;
+        gap: 8px;
         h2{
             font-size: 22px;
             font-weight: 600;
@@ -32,6 +33,39 @@
 
             &:hover {
                 color: #C89B3C;
+            }
+        }
+
+        .duas-left-badge {
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: #f2f2f2;
+            border: 1px solid #d7d7d7;
+            color: #2f2f2f;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            &.loading {
+                opacity: 0.75;
+            }
+        }
+
+        .usage-info-btn {
+            border: none;
+            background: transparent;
+            color: #6d6d6d;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            font-size: 15px;
+            line-height: 1;
+
+            &:hover {
+                color: #c89b3c;
             }
         }
     }
@@ -146,8 +180,12 @@
         }
 
         &:disabled{
-            opacity: 0.6;
+            opacity: 1;
+            background: #c8c8c8;
+            color: #ffffff;
             cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
     }
 
