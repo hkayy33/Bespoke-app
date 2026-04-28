@@ -4,7 +4,9 @@
 
     <div class="nav-left">
       <div class="brand">
-        <img src="/hands.png" alt="Hands making dua" />
+        <a routerLink="/" aria-label="Go to home page">
+          <img src="/hands.png" alt="Hands making dua" />
+        </a>
       </div>
 
       <p class="quote">
@@ -22,15 +24,9 @@
       <div class="user-section" *ngIf="authService.user()">
         <button
           class="user-icon"
-          (click)="toggleDropdown()"
-          [class.active]="dropdownOpen()">
+          (click)="toggleDropdown()">
           <i class="fas fa-user-circle"></i>
         </button>
-
-        <div class="user-dropdown" *ngIf="dropdownOpen()">
-          <p class="username">{{ authService.user()?.username }}</p>
-          <button class="logout-btn" (click)="logout()">Logout</button>
-        </div>
       </div>
 
       <div class="auth-section" *ngIf="!authService.user()">

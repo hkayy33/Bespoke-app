@@ -1,0 +1,48 @@
+<footer class="footer">
+  <div class="footer__content">
+    <p class="footer__eyebrow">Connect</p>
+    <h2 class="footer__title">BespokeDua</h2>
+    <p class="footer__lede">Follow the journey and reach out anytime.</p>
+
+    <div class="footer__links">
+      <a
+        class="footer__link"
+        href="https://www.instagram.com/bespoke_dua/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="BespokeDua on Instagram">
+        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+      </a>
+      <a
+        class="footer__link"
+        href="mailto:bespokedua@gmail.com"
+        aria-label="Email BespokeDua at bespokedua@gmail.com">
+        <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+      </a>
+    </div>
+
+    <div class="footer__policies" aria-label="Policy links">
+      <a
+        class="footer__policy-link"
+        href="/terms-and-conditions"
+        routerLink="/terms-and-conditions"
+        (click)="navigateToPolicy($event, '/terms-and-conditions')">
+        Terms &amp; Conditions
+      </a>
+      <a
+        class="footer__policy-link"
+        href="/privacy-policy"
+        routerLink="/privacy-policy"
+        (click)="navigateToPolicy($event, '/privacy-policy')">
+        Privacy Policy
+      </a>
+      <a
+        class="footer__policy-link"
+        href="/refund-policy"
+        routerLink="/refund-policy"
+        (click)="navigateToPolicy($event, '/refund-policy')">
+        Refund Policy
+      </a>
+    </div>
+  </div>
+</footer>

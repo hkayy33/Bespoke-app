@@ -1,9 +1,14 @@
 <div class="app">
-  <app-nav-bar (myDuaClicked)="onMyDuaClicked()" (authClicked)="onAuthClicked()"></app-nav-bar>
+  <app-nav-bar
+    (myDuaClicked)="onMyDuaClicked()"
+    (authClicked)="onAuthClicked()"
+    (accountClicked)="onAccountClicked()"></app-nav-bar>
 
   <main class="app-main">
     <router-outlet />
   </main>
+
+  <app-footer></app-footer>
 
   @if (authService.showAuthPage()) {
     <app-auth-page></app-auth-page>
@@ -11,5 +16,13 @@
 
   @if (showSavedDuasModal()) {
     <app-saved-duas-modal (close)="closeSavedDuasModal()"></app-saved-duas-modal>
+  }
+
+  @if (showUserProfileModal()) {
+    <app-user-profile-modal (close)="closeUserProfileModal()"></app-user-profile-modal>
+  }
+
+  @if (authService.showPlanModal()) {
+    <app-plan-modal (close)="closePlanModal()"></app-plan-modal>
   }
 </div>

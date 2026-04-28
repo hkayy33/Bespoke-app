@@ -143,43 +143,6 @@
     transform: scale(1.06);
   }
 
-  &.active {
-    background: rgba(200, 155, 60, 0.3);
-  }
-}
-
-.user-dropdown {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  background: #f7f4ec;
-  border: 1px solid #c89b3c;
-  border-radius: 0.75rem;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
-  padding: 0.75rem;
-  min-width: 160px;
-  z-index: 1000;
-
-  .username {
-    margin: 0 0 0.65rem;
-    font-weight: 700;
-    color: #0f3d2e;
-  }
-
-  .logout-btn {
-    width: 100%;
-    padding: 0.65rem 0.8rem;
-    background: #0f3d2e;
-    color: #f7f4ec;
-    border: none;
-    border-radius: 0.45rem;
-    cursor: pointer;
-    font-weight: 600;
-
-    &:hover {
-      opacity: 0.92;
-    }
-  }
 }
 
 /* Tablet + mobile */
@@ -245,10 +208,6 @@
     max-width: 100%;
   }
 
-  .user-dropdown {
-    top: calc(100% + 0.4rem);
-    right: 0;
-  }
 }
 
 /* Small mobile */
@@ -281,7 +240,4 @@
     font-size: 1.85rem;
   }
 
-  .user-dropdown {
-    width: min(220px, calc(100vw - 24px));
-  }
 }

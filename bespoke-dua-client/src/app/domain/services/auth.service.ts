@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthUser, LoginRequest, RegisterRequest, LoginResponse } from '../models/auth.models';
@@ -12,11 +12,13 @@ export class AuthService {
   private loadingSignal = signal(false);
   private errorSignal = signal<string | null>(null);
   private showAuthPageSignal = signal(false);
+  private showPlanModalSignal = signal(false);
 
   user = computed(() => this.userSignal());
   loading = computed(() => this.loadingSignal());
   error = computed(() => this.errorSignal());
   showAuthPage = computed(() => this.showAuthPageSignal());
+  showPlanModal = computed(() => this.showPlanModalSignal());
 
   private authUrl = `${environment.apiUrl}/Auth`;
 
@@ -96,7 +98,33 @@ export class AuthService {
     this.showAuthPageSignal.set(show);
   }
 
+  setShowPlanModal(show: boolean): void {
+    this.showPlanModalSignal.set(show);
+  }
+
   clearError(): void {
     this.errorSignal.set(null);
+  }
+
+  deleteAccount() {
+    const user = this.userSignal();
+    if (!user) {
+      return of(false);
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${user.userId}`,
+    });
+
+    return this.http.delete<void>(`${this.authUrl}/account`, { headers }).pipe(
+      map(() => true),
+      tap(() => {
+        this.logout();
+      }),
+      catchError((error) => {
+        this.errorSignal.set(error?.error?.message || error?.message || 'Failed to delete account.');
+        return of(false);
+      })
+    );
   }
 }
