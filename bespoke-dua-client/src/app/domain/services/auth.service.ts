@@ -106,6 +106,29 @@ export class AuthService {
     this.errorSignal.set(null);
   }
 
+  validateStoredSession() {
+    const user = this.userSignal();
+    if (!user) {
+      return of(false);
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${user.userId}`,
+    });
+
+    return this.http.get<AuthUser>(`${this.authUrl}/me`, { headers }).pipe(
+      tap((freshUser) => {
+        this.userSignal.set(freshUser);
+        this.saveStoredUser(freshUser);
+      }),
+      map(() => true),
+      catchError(() => {
+        this.logout();
+        return of(false);
+      })
+    );
+  }
+
   deleteAccount() {
     const user = this.userSignal();
     if (!user) {
