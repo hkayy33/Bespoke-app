@@ -16,13 +16,21 @@
       <div class="whats-new-badge">Update</div>
       <h2 id="whats-new-title" class="whats-new-title">What&rsquo;s new?</h2>
       <p class="whats-new-lead">
-        We&rsquo;ve introduced the feature to save your heartfelt duas to your account.
+        Bespoke Dua is now available on the App Store.
       </p>
       <p class="whats-new-detail">
-        After you sign in, use the bookmark on each dua to keep it in
-        <strong>My Heart&rsquo;s Duas</strong> and revisit it anytime from the menu.
+        Download it on your iPhone or iPad and continue your journey with personalised duas,
+        meaningful guidance, and a reflective experience built around remembrance.
       </p>
-      <button type="button" class="whats-new-cta" (click)="dismissWhatsNew()">Got it</button>
+      <a
+        class="whats-new-cta"
+        href="https://apps.apple.com/gb/app/bespoke-dua/id6761731591"
+        (click)="onAppStoreClick()"
+        target="_blank"
+        rel="noopener noreferrer">
+        View on the App Store
+      </a>
+      <button type="button" class="whats-new-dismiss" (click)="dismissWhatsNew()">Continue on web</button>
     </div>
   </div>
 }

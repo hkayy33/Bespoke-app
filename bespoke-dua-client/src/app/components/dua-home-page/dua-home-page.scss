@@ -89,7 +89,12 @@
 }
 
 .whats-new-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
   width: 100%;
+  box-sizing: border-box;
   padding: 0.95rem 1rem;
   border: none;
   border-radius: 999px;
@@ -102,6 +107,28 @@
 
   &:hover {
     opacity: 0.92;
+  }
+}
+
+.whats-new-dismiss {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0.65rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(15, 61, 46, 0.2);
+  border-radius: 999px;
+  background: transparent;
+  color: #0f3d2e;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(15, 61, 46, 0.06);
   }
 }
 
