@@ -1,8 +1,7 @@
 :host {
-  --carousel-surface: rgba(255, 255, 255, 0.72);
   --carousel-border: rgba(15, 61, 46, 0.12);
-  --carousel-shadow: 0 20px 50px -18px rgba(15, 61, 46, 0.14);
   --carousel-accent: #c89b3c;
+  --carousel-accent-soft: rgba(200, 155, 60, 0.16);
   --carousel-muted: rgba(100, 116, 139, 0.45);
   display: block;
   width: 100%;
@@ -16,20 +15,19 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  padding: clamp(0.55rem, 1.8vw, 0.95rem) clamp(0.3rem, 1.2vw, 0.7rem);
-  border-radius: 1.5rem;
-  background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.78) 0%,
-      rgba(255, 255, 255, 0.62) 100%
+  padding: clamp(0.8rem, 2vw, 1.2rem) clamp(0.45rem, 1.4vw, 0.85rem);
+  border-radius: 1.65rem;
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 255, 255, 0.92) 55%,
+      rgba(248, 250, 252, 0.9) 100%
     );
-  border: 1px solid rgba(15, 61, 46, 0.08);
+  border: 1px solid rgba(15, 61, 46, 0.1);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.55) inset,
-    0 24px 56px -22px rgba(15, 61, 46, 0.1),
-    0 12px 32px -16px rgba(15, 61, 46, 0.06);
-  backdrop-filter: blur(20px) saturate(1.05);
-  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+    0 24px 46px -24px rgba(15, 23, 42, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .viewport {
@@ -41,9 +39,9 @@
   align-items: flex-start;
   justify-content: center;
   /* Cap vh so hero + nav stays one calm screen; rem floor keeps phones readable */
-  min-height: min(14rem, 32vh);
-  padding-inline: clamp(1.85rem, 6cqw, 2.5rem);
-  padding-top: 0.1rem;
+  min-height: min(14.5rem, 34vh);
+  padding-inline: clamp(1.85rem, 6cqw, 2.6rem);
+  padding-top: 0.2rem;
 }
 
 .slides {
@@ -63,12 +61,9 @@
   display: flex;
   justify-content: center;
   border-radius: 1.35rem;
-  transition: opacity 0.45s ease;
-  /* Lighter rim + softer lift so the phone reads as floating in glass, not pasted on */
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.28) inset,
-    0 20px 44px -18px rgba(15, 61, 46, 0.11),
-    0 8px 20px -10px rgba(15, 61, 46, 0.05);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.015), rgba(15, 61, 46, 0.05));
+  border: 1px solid rgba(15, 61, 46, 0.08);
 }
 
 .nav {
@@ -84,15 +79,11 @@
   height: 2.5rem;
   border: 1px solid var(--carousel-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.96);
   color: rgba(15, 61, 46, 0.88);
   font-size: 0.85rem;
   cursor: pointer;
-  box-shadow:
-    0 1px 2px rgba(15, 61, 46, 0.06),
-    0 8px 20px -6px rgba(15, 61, 46, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(15, 61, 46, 0.2);
   transition:
     background 0.2s ease,
     color 0.2s ease,
@@ -108,11 +99,9 @@
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.98);
+    background: #fff;
     color: #0f3d2e;
-    box-shadow:
-      0 2px 4px rgba(15, 61, 46, 0.08),
-      0 12px 28px -8px rgba(15, 61, 46, 0.14);
+    box-shadow: 0 14px 30px rgba(15, 61, 46, 0.24);
   }
 
   &:active {
@@ -125,12 +114,47 @@
   }
 }
 
+.caption {
+  text-align: center;
+  margin-top: clamp(0.95rem, 2.6vw, 1.3rem);
+  padding-inline: clamp(0.35rem, 1.2vw, 1.1rem);
+}
+
+.caption__kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(15, 61, 46, 0.64);
+  font-weight: 700;
+}
+
+.caption__title {
+  margin: 0;
+  color: #0f3d2e;
+  font-size: clamp(1rem, 2.5vw, 1.24rem);
+  line-height: 1.25;
+  font-weight: 700;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+.caption__description {
+  margin: 0.5rem auto 0;
+  max-width: min(42ch, 100%);
+  font-size: clamp(0.82rem, 2vw, 0.94rem);
+  line-height: 1.56;
+  color: rgba(15, 23, 42, 0.82);
+  text-wrap: pretty;
+}
+
 .dots {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  margin-top: clamp(0.95rem, 2.5vw, 1.25rem);
+  margin-top: clamp(0.95rem, 2.5vw, 1.3rem);
   padding-bottom: clamp(0.2rem, 0.8vw, 0.35rem);
 }
 
@@ -143,20 +167,22 @@
   background: var(--carousel-muted);
   cursor: pointer;
   transition:
-    width 0.35s cubic-bezier(0.33, 1, 0.68, 1),
-    background 0.25s ease,
-    opacity 0.25s ease;
+    width 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
-    opacity: 0.85;
+    opacity: 1;
     background: rgba(100, 116, 139, 0.65);
+    transform: scale(1.05);
   }
 
   &--active {
     width: 1.5rem;
     background: var(--carousel-accent);
+    box-shadow: 0 0 0 3px var(--carousel-accent-soft);
     opacity: 1;
-    box-shadow: 0 2px 12px rgba(200, 155, 60, 0.35);
+    transform: none;
   }
 
   &:focus-visible {

@@ -34,6 +34,16 @@
     </button>
   </div>
 
+  @if (slides.length > 0) {
+    <div class="caption">
+      <p class="caption__kicker">How BespokeDua Works</p>
+      <h3 class="caption__title">{{ slides[currentIndex].title }}</h3>
+      <p class="caption__description">
+        {{ slides[currentIndex].description }}
+      </p>
+    </div>
+  }
+
   <div class="dots" role="tablist" aria-label="Slide">
     @for (_ of slides; track $index) {
       <button
@@ -41,7 +51,14 @@
         class="dot"
         role="tab"
         [attr.aria-selected]="currentIndex === $index"
-        [attr.aria-label]="'Slide ' + ($index + 1) + ' of ' + slides.length"
+        [attr.aria-label]="
+          'Slide ' +
+          ($index + 1) +
+          ' of ' +
+          slides.length +
+          ': ' +
+          slides[$index].title
+        "
         [class.dot--active]="currentIndex === $index"
         (click)="goTo($index)"
       ></button>

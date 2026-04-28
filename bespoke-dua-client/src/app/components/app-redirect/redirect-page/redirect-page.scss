@@ -23,7 +23,10 @@
   /* Allow carousel 3D / shadows to paint outside the hero band */
   overflow-x: clip;
   overflow-y: visible;
-  background: linear-gradient(180deg, #eef2eb 0%, #f6f4ef 35%, #fafafa 100%);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(200, 155, 60, 0.14), transparent 45%),
+    radial-gradient(circle at 86% 6%, rgba(15, 61, 46, 0.08), transparent 42%),
+    linear-gradient(180deg, #edf3ec 0%, #f7f4ee 38%, #fafafa 100%);
   color: #0f3d2e;
 }
 
@@ -77,13 +80,14 @@
   flex-direction: column;
   align-items: flex-start;
   padding: clamp(1.65rem, 4.2vw, 2.5rem) clamp(1.5rem, 3.8vw, 2.25rem);
-  border-radius: 1.25rem;
-  background: #f7f4ec;
-  border: 1px solid rgba(200, 155, 60, 0.28);
+  border-radius: 1.4rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(247, 244, 236, 0.92));
+  border: 1px solid rgba(200, 155, 60, 0.3);
+  backdrop-filter: blur(4px);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.75) inset,
-    0 18px 40px -20px rgba(15, 61, 46, 0.12),
-    0 6px 16px -8px rgba(15, 61, 46, 0.06);
+    0 22px 52px -24px rgba(15, 61, 46, 0.2),
+    0 10px 24px -14px rgba(15, 61, 46, 0.12);
 }
 
 .hero__title {
@@ -91,9 +95,10 @@
   font-family: 'Inter', system-ui, sans-serif;
   font-size: clamp(2.15rem, 4.2vw, 3.35rem);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.04;
   letter-spacing: -0.03em;
   color: #0f3d2e;
+  text-wrap: balance;
 }
 
 .hero__tagline {
@@ -103,7 +108,8 @@
   font-size: clamp(1rem, 1.9vw, 1.2rem);
   font-weight: 600;
   line-height: 1.65;
-  color: rgba(15, 61, 46, 0.82);
+  color: rgba(15, 61, 46, 0.8);
+  text-wrap: pretty;
 }
 
 .hero__downloads {
@@ -130,14 +136,24 @@
   text-decoration: none;
   border: none;
   cursor: pointer;
-  color: #0f3d2e;
-  background: #c89b3c;
-  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+  color: #123c2f;
+  background: linear-gradient(135deg, #d8ac49 0%, #c89b3c 55%, #b88b2f 100%);
+  box-shadow:
+    0 12px 22px -14px rgba(15, 61, 46, 0.5),
+    0 2px 0 rgba(255, 255, 255, 0.35) inset;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
-    opacity: 0.96;
-    background: #b8903a;
+    opacity: 1;
+    background: linear-gradient(135deg, #ddb55a 0%, #cea147 55%, #bd9036 100%);
+    box-shadow:
+      0 16px 28px -16px rgba(15, 61, 46, 0.5),
+      0 2px 0 rgba(255, 255, 255, 0.35) inset;
   }
 
   &:active {
@@ -154,14 +170,16 @@
   display: inline-block;
   line-height: 0;
   border-radius: 0.45rem;
-  opacity: 0.95;
+  opacity: 0.96;
   transition:
     opacity 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    filter 0.2s ease;
 
   &:hover {
     opacity: 1;
     transform: translateY(-2px);
+    filter: saturate(1.05);
   }
 
   &:focus-visible {
@@ -196,7 +214,7 @@
   margin: 0;
   padding: clamp(1.35rem, 3.6vw, 2rem) clamp(1.25rem, 4vw, 2.5rem)
     clamp(1.5rem, 4vw, 2.15rem);
-  background: linear-gradient(180deg, #f6f4ef 0%, #faf8f3 45%, #fafafa 100%);
+  background: linear-gradient(180deg, #f7f4ee 0%, #fcfaf6 45%, #ffffff 100%);
   color: #0f3d2e;
   border-top: 1px solid rgba(15, 61, 46, 0.06);
 }
@@ -232,8 +250,8 @@
   margin: 0 auto;
   padding: 0;
   width: 100%;
-  max-width: 52rem;
-  gap: 0;
+  max-width: 56rem;
+  gap: 0.55rem;
 }
 
 .flow__step {
@@ -243,7 +261,12 @@
   text-align: center;
   flex: 1 1 0;
   min-width: 0;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  border-radius: 1rem;
+  padding: clamp(0.65rem, 1.8vw, 0.95rem) clamp(0.4rem, 1.2vw, 0.7rem);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(15, 61, 46, 0.08);
+  box-shadow: 0 10px 24px -20px rgba(15, 61, 46, 0.35);
 }
 
 .flow__icon {
@@ -254,9 +277,12 @@
   width: var(--flow-icon);
   height: var(--flow-icon);
   border-radius: 50%;
-  background: rgba(200, 155, 60, 0.18);
+  background: linear-gradient(140deg, rgba(200, 155, 60, 0.32), rgba(200, 155, 60, 0.18));
   color: #3d2e1f;
-  font-size: 0.58rem;
+  font-size: 0.62rem;
+  box-shadow:
+    0 0 0 1px rgba(200, 155, 60, 0.18),
+    0 8px 16px -12px rgba(15, 61, 46, 0.45);
 }
 
 .flow__copy {
@@ -272,8 +298,9 @@
   font-family: 'Playfair Display', Georgia, serif;
   font-size: clamp(0.62rem, 1.15vw, 0.74rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   color: #0f3d2e;
+  text-wrap: balance;
 }
 
 .flow__desc {
@@ -282,12 +309,13 @@
   font-weight: 400;
   line-height: 1.35;
   color: rgba(15, 61, 46, 0.72);
+  text-wrap: pretty;
 }
 
 /* Dotted segment between steps — grows on wide screens */
 .flow__connector {
   flex: 1 1 0;
-  min-width: 0.65rem;
+  min-width: 0.45rem;
   max-width: none;
   align-self: flex-start;
   margin-top: calc(var(--flow-icon) / 2);
@@ -295,7 +323,7 @@
   padding: 0;
   list-style: none;
   border: 0;
-  border-top: 1px dotted rgba(15, 61, 46, 0.22);
+  border-top: 1px dashed rgba(15, 61, 46, 0.25);
 }
 
 @media (max-width: 900px) {
@@ -344,12 +372,13 @@
 
   .flow__list {
     max-width: min(22.5rem, 100%);
+    gap: 0.4rem;
   }
 
   .flow__connector {
-    flex: 0 1 0.75rem;
-    min-width: 0.4rem;
-    max-width: 1.35rem;
+    flex: 0 1 0.65rem;
+    min-width: 0.25rem;
+    max-width: 0.9rem;
   }
 }
 
