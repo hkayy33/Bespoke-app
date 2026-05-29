@@ -7,6 +7,7 @@ import { SavedDuasModal } from './components/saved-duas-modal/saved-duas-modal';
 import { UserProfileModal } from './components/user-profile-modal/user-profile-modal';
 import { PlanModal } from './components/plan-modal/plan-modal';
 import { AuthService } from './domain/services/auth.service';
+import { isSupabaseConfigured } from './core/supabase.client';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,11 @@ export class App implements OnInit {
   constructor(protected authService: AuthService) {}
 
   ngOnInit(): void {
+    if (isSupabaseConfigured()) {
+      this.authService.handleAuthRedirect().subscribe();
+      return;
+    }
+
     if (this.authService.user()) {
       this.authService.validateStoredSession().subscribe();
     }

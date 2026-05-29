@@ -3,9 +3,11 @@ namespace BespokeDuaApi.Models
     public class User
     {
         public int UserId { get; set; }                  // PK
+        /// <summary>Supabase <c>auth.users.id</c> (JWT <c>sub</c>).</summary>
+        public Guid? AuthUserId { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string HashedPassword { get; set; } = string.Empty;
+        public string? HashedPassword { get; set; }
         public PlanType Plan { get; set; } = PlanType.Free;
         public int DailyRequests { get; set; }
         public int MonthlyRequests { get; set; }

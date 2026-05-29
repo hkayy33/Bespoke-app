@@ -6,11 +6,14 @@ using Microsoft.Extensions.Options;
 
 namespace BespokeDuaApi.Auth;
 
-public sealed class UserIdBearerAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+/// <summary>
+/// Legacy auth for users created before Supabase (Bearer token is numeric <see cref="Models.User.UserId"/>).
+/// </summary>
+public sealed class LegacyUserIdBearerAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     private readonly BespokeDuaDbContext _db;
 
-    public UserIdBearerAuthenticationHandler(
+    public LegacyUserIdBearerAuthenticationHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
@@ -20,7 +23,7 @@ public sealed class UserIdBearerAuthenticationHandler : AuthenticationHandler<Au
         _db = db;
     }
 
-    public const string SchemeName = "UserIdBearer";
+    public const string SchemeName = "LegacyUserIdBearer";
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
@@ -33,24 +36,24 @@ public sealed class UserIdBearerAuthenticationHandler : AuthenticationHandler<Au
         var token = authHeader["Bearer ".Length..].Trim();
         if (!int.TryParse(token, out var userId) || userId <= 0)
         {
-            return AuthenticateResult.Fail("Invalid token.");
+            return AuthenticateResult.NoResult();
         }
 
         var user = await _db.Users.FindAsync(userId);
-        if (user == null)
+        if (user is null || user.AuthUserId is not null)
         {
-            return AuthenticateResult.Fail("User not found.");
+            return AuthenticateResult.Fail("Invalid legacy token.");
         }
 
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new(ClaimTypes.Name, user.Username),
-            new(ClaimTypes.Email, user.Email)
+            new(ClaimTypes.Email, user.Email),
+            new("auth_mode", "legacy"),
         };
 
         var identity = new ClaimsIdentity(claims, Scheme.Name);
-        var principal = new ClaimsPrincipal(identity);
-        return AuthenticateResult.Success(new AuthenticationTicket(principal, Scheme.Name));
+        return AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name));
     }
 }

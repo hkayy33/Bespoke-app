@@ -1,8 +1,8 @@
-using System.Security.Claims;
 using BespokeDuaApi.Auth;
 using BespokeDuaApi.Data;
 using BespokeDuaApi.DTO;
 using BespokeDuaApi.Models;
+using BespokeDuaApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,22 +17,26 @@ public class PlanController : ControllerBase
     public const string PlusMonthlyProductId = "com.Stylistic.bespokeDua.subscription.monthly";
 
     private readonly BespokeDuaDbContext _context;
+    private readonly AppUserService _appUsers;
 
-    public PlanController(BespokeDuaDbContext context)
+    public PlanController(BespokeDuaDbContext context, AppUserService appUsers)
     {
         _context = context;
+        _appUsers = appUsers;
     }
 
     /// <summary>
     /// Links an Apple subscription (original transaction id) to the signed-in user and sets <see cref="PlanType.Subscribed"/>.
     /// </summary>
-    [Authorize(AuthenticationSchemes = UserIdBearerAuthenticationHandler.SchemeName)]
+    [Authorize(AuthenticationSchemes = AppAuthenticationExtensions.CombinedScheme)]
     [HttpPatch("subscribe")]
     public async Task<ActionResult<GetUserDto>> Subscribe([FromBody] SubscribePlanDto dto)
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
+        var user = await _appUsers.GetCurrentUserAsync(User);
+        if (user is null)
+            return Unauthorized(new { message = "Profile not found." });
+
+        var userId = user.UserId;
 
         if (string.IsNullOrWhiteSpace(dto.OriginalTransactionId))
             return BadRequest(new { message = "originalTransactionId is required." });
@@ -42,10 +46,6 @@ public class PlanController : ControllerBase
             return BadRequest(new { message = "Unknown or missing productId." });
 
         var transactionId = dto.OriginalTransactionId.Trim();
-
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
-        if (user == null)
-            return NotFound(new { message = "User not found." });
 
         var ownership = await _context.SubscriptionOwnerships
             .FirstOrDefaultAsync(o => o.OriginalTransactionId == transactionId);

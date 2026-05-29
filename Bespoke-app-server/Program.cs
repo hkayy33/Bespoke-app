@@ -1,5 +1,5 @@
 using BespokeDuaApi.Auth;
-using Microsoft.AspNetCore.Authentication;
+using BespokeDuaApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,13 +40,10 @@ builder.Services.AddDbContext<BespokeDuaApi.Data.BespokeDuaDbContext>(options =>
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<BespokeDuaApi.Services.UsageService>();
-
-builder.Services
-    .AddAuthentication(UserIdBearerAuthenticationHandler.SchemeName)
-    .AddScheme<AuthenticationSchemeOptions, UserIdBearerAuthenticationHandler>(
-        UserIdBearerAuthenticationHandler.SchemeName,
-        _ => { });
+builder.Services.AddScoped<UsageService>();
+builder.Services.AddScoped<AppUserService>();
+builder.Services.AddScoped<SupabaseAuthAdminService>();
+builder.Services.AddAppAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

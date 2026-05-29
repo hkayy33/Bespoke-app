@@ -23,8 +23,7 @@
   gap: 1rem;
 }
 
-
-.form-panel button {
+.form-panel form > button[type='submit'] {
   width: 100%;
   padding: 1.1rem;
   margin-top: 0.5rem;
@@ -37,9 +36,58 @@
   transition: opacity 0.2s ease;
 }
 
-.form-panel button:disabled {
+.form-panel form > button[type='submit']:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+.verify-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.verify-panel__text {
+  margin: 0;
+  color: rgba(15, 61, 46, 0.8);
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.verify-panel__text strong {
+  color: #0f3d2e;
+  word-break: break-word;
+}
+
+.verify-panel__feedback {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #0f3d2e;
+}
+
+.verify-panel__links {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+}
+
+.verify-panel__link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #0f3d2e;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.verify-panel__link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.verify-panel__sep {
+  margin: 0 0.35rem;
+  color: rgba(15, 61, 46, 0.35);
 }
 
 @media (max-width: 480px) {
@@ -52,7 +100,7 @@
   }
 
   .form-panel input,
-  .form-panel button {
+  .form-panel form > button[type='submit'] {
     font-size: 0.95rem;
   }
 }

@@ -18,6 +18,9 @@ export class AuthPage {
 
   selectTab(tab: 'login' | 'register') {
     this.activeTab.set(tab);
+    if (tab === 'login') {
+      this.authService.clearError();
+    }
   }
 
   closeModal() {

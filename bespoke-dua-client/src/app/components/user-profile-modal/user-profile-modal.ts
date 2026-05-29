@@ -77,7 +77,7 @@ export class UserProfileModal implements OnInit {
   }
 
   protected confirmLogout(): void {
-    this.authService.logout();
+    this.authService.logout().subscribe();
     this.closeModal();
   }
 
