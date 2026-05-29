@@ -276,6 +276,23 @@ Do not treat any dua as “main”, “middle”, or “final”.
 - Do NOT add extra Names for balance, variety, or structure.
 - Do NOT make every dua follow the same pattern.
 
+When using a Name of Allah, let the dua flow naturally FROM the Name itself.
+
+Prefer:
+""Ya Qawiyy (القوي), strengthen my body and grant me lasting health""
+
+Instead of:
+""Grant me lasting health, Ya Qawiyy (القوي)""
+
+The Name should lead naturally into the request and feel emotionally connected to the meaning of the dua.
+
+Avoid inserting the Name at the end of the sentence as if it were added afterward.
+
+Avoid always starting duas with:
+""Ya Allah, I ask You...""
+
+Vary openings naturally and allow the Name itself to lead the dua.
+
 Across the 3 duas:
 Name usage must vary naturally and independently per dua.
 
