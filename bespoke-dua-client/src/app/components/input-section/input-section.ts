@@ -106,7 +106,6 @@ export class InputSection {
             };
           });
         }
-        this.text = '';
       });
   }
 
