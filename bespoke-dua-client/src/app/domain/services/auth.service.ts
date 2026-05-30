@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthError } from '@supabase/supabase-js';
 import { catchError, from, map, Observable, of, switchMap, tap } from 'rxjs';
 import { getSupabaseClient, isSupabaseConfigured } from '../../core/supabase.client';
+import { getAuthCallbackUrl } from '../../../environments/auth-redirect.config';
 import { environment } from '../../../environments/environment';
 import {
   AuthMode,
@@ -31,10 +32,12 @@ export class AuthService {
   private showAuthPageSignal = signal(false);
   private showPlanModalSignal = signal(false);
   private pendingVerificationEmailSignal = signal<string | null>(this.loadPendingVerificationEmail());
+  private passwordRecoverySignal = signal(false);
 
   user = computed(() => this.userSignal());
   awaitingEmailVerification = computed(() => this.pendingVerificationEmailSignal() !== null);
   pendingVerificationEmail = computed(() => this.pendingVerificationEmailSignal());
+  passwordRecoveryPending = computed(() => this.passwordRecoverySignal());
   loading = computed(() => this.loadingSignal());
   error = computed(() => this.errorSignal());
   showAuthPage = computed(() => this.showAuthPageSignal());
@@ -52,6 +55,16 @@ export class AuthService {
         return;
       }
 
+      if (event === 'PASSWORD_RECOVERY') {
+        this.passwordRecoverySignal.set(true);
+        this.showAuthPageSignal.set(true);
+        return;
+      }
+
+      if (this.passwordRecoverySignal()) {
+        return;
+      }
+
       if (
         (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') &&
         session?.user?.email_confirmed_at
@@ -60,6 +73,7 @@ export class AuthService {
       }
 
       if (event === 'SIGNED_OUT') {
+        this.passwordRecoverySignal.set(false);
         this.userSignal.set(null);
         this.saveStoredUser(null);
         this.setAuthMode(null);
@@ -67,21 +81,157 @@ export class AuthService {
     });
   }
 
-  /** Call on app load and after email verification redirect (hash tokens in URL). */
+  /** Call on app load and after email verification redirect (PKCE `code` or hash tokens in URL). */
   handleAuthRedirect(): Observable<AuthUser | null> {
     if (!isSupabaseConfigured()) {
       return of(null);
     }
 
-    return from(getSupabaseClient().auth.getSession()).pipe(
-      switchMap(({ data }) => {
-        if (!data.session?.user?.email_confirmed_at) {
+    const pageUrl =
+      typeof window !== 'undefined' ? new URL(window.location.href) : null;
+    const isRecovery = this.isPasswordRecoveryUrl(pageUrl);
+
+    const client = getSupabaseClient();
+    const code = pageUrl?.searchParams.get('code') ?? null;
+
+    const session$ = code
+      ? from(client.auth.exchangeCodeForSession(code)).pipe(
+          map(({ data, error }) => {
+            if (error) {
+              return null;
+            }
+            this.stripAuthParamsFromUrl();
+            return data.session;
+          })
+        )
+      : from(client.auth.getSession()).pipe(map(({ data }) => data.session));
+
+    return session$.pipe(
+      switchMap((session) => {
+        if (!session) {
+          return of(null);
+        }
+
+        if (isRecovery || this.passwordRecoverySignal()) {
+          this.passwordRecoverySignal.set(true);
+          this.showAuthPageSignal.set(true);
+          this.stripAuthParamsFromUrl();
+          return of(null);
+        }
+
+        if (!session.user.email_confirmed_at) {
           return of(null);
         }
 
         return from(this.completeSupabaseSignIn());
       })
     );
+  }
+
+  requestPasswordReset(email: string): Observable<boolean> {
+    if (!isSupabaseConfigured()) {
+      this.errorSignal.set('Password reset is not available for this account.');
+      return of(false);
+    }
+
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    return from(
+      getSupabaseClient().auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: this.getEmailRedirectTo(),
+      })
+    ).pipe(
+      map(({ error }) => {
+        this.loadingSignal.set(false);
+        if (error) {
+          this.errorSignal.set(this.mapAuthError(error));
+          return false;
+        }
+        return true;
+      }),
+      catchError((error: unknown) => {
+        this.loadingSignal.set(false);
+        this.errorSignal.set(
+          error instanceof Error ? error.message : 'Could not send reset email.'
+        );
+        return of(false);
+      })
+    );
+  }
+
+  completePasswordReset(password: string): Observable<AuthUser | null> {
+    if (!isSupabaseConfigured()) {
+      return of(null);
+    }
+
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    return from(getSupabaseClient().auth.updateUser({ password })).pipe(
+      switchMap(({ error }) => {
+        if (error) {
+          return this.fail(this.mapAuthError(error));
+        }
+
+        this.passwordRecoverySignal.set(false);
+        this.setAuthMode('supabase');
+        return this.syncAppProfile();
+      }),
+      catchError((error: unknown) =>
+        this.fail(error instanceof Error ? error.message : 'Could not update password.')
+      )
+    );
+  }
+
+  clearPasswordRecovery(): void {
+    this.passwordRecoverySignal.set(false);
+    if (isSupabaseConfigured()) {
+      void getSupabaseClient().auth.signOut();
+    }
+  }
+
+  private getEmailRedirectTo(): string | undefined {
+    if (environment.authRedirectUrl) {
+      return environment.authRedirectUrl;
+    }
+    return typeof window !== 'undefined' ? getAuthCallbackUrl() : undefined;
+  }
+
+  private isPasswordRecoveryUrl(url: URL | null): boolean {
+    if (!url) {
+      return false;
+    }
+
+    if (url.searchParams.get('type') === 'recovery') {
+      return true;
+    }
+
+    const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
+    return hashParams.get('type') === 'recovery';
+  }
+
+  private stripAuthParamsFromUrl(): void {
+    if (typeof window === 'undefined' || !window.history.replaceState) {
+      return;
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('code');
+    url.searchParams.delete('type');
+    if (url.hash) {
+      const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
+      hashParams.delete('access_token');
+      hashParams.delete('refresh_token');
+      hashParams.delete('expires_in');
+      hashParams.delete('expires_at');
+      hashParams.delete('token_type');
+      hashParams.delete('type');
+      const remaining = hashParams.toString();
+      url.hash = remaining ? `#${remaining}` : '';
+    }
+    const clean = url.pathname + url.search + url.hash;
+    window.history.replaceState({}, '', clean || '/');
   }
 
   async getAccessToken(): Promise<string | null> {
@@ -154,7 +304,7 @@ export class AuthService {
         email,
         password: dto.password,
         options: {
-          emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : undefined,
+          emailRedirectTo: this.getEmailRedirectTo(),
         },
       })
     ).pipe(
@@ -196,7 +346,7 @@ export class AuthService {
         type: 'signup',
         email,
         options: {
-          emailRedirectTo: typeof window !== 'undefined' ? window.location.origin : undefined,
+          emailRedirectTo: this.getEmailRedirectTo(),
         },
       })
     ).pipe(

@@ -25,7 +25,11 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     if (isSupabaseConfigured()) {
-      this.authService.handleAuthRedirect().subscribe();
+      const onCallbackRoute =
+        typeof window !== 'undefined' && window.location.pathname.endsWith('/auth/callback');
+      if (!onCallbackRoute) {
+        this.authService.handleAuthRedirect().subscribe();
+      }
       return;
     }
 

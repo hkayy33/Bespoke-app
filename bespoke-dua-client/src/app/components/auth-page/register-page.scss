@@ -41,53 +41,194 @@
   cursor: not-allowed;
 }
 
+// Email verification step (matches iOS AuthModalView)
 .verify-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1.35rem;
+  width: 100%;
 }
 
-.verify-panel__text {
+.verify-panel__hero {
+  display: flex;
+  justify-content: center;
+}
+
+.verify-panel__icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 61, 46, 0.14) 0%,
+    rgba(200, 155, 60, 0.22) 100%
+  );
+}
+
+.verify-panel__icon {
+  width: 2rem;
+  height: 2rem;
+  color: #0f3d2e;
+}
+
+.verify-panel__headline {
+  text-align: center;
+}
+
+.verify-panel__headline h2 {
+  margin: 0 0 0.5rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.625rem;
+  font-weight: 600;
+  color: #0f3d2e;
+  line-height: 1.2;
+}
+
+.verify-panel__subtitle {
   margin: 0;
-  color: rgba(15, 61, 46, 0.8);
-  line-height: 1.55;
-  font-size: 0.95rem;
+  color: #666;
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
-.verify-panel__text strong {
+.verify-panel__email-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #fbfcfb;
+  border: 1px solid rgba(15, 61, 46, 0.2);
+}
+
+.verify-panel__email-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(38, 74, 56, 0.85);
+}
+
+.verify-panel__email-value {
+  font-size: 1rem;
+  font-weight: 600;
   color: #0f3d2e;
   word-break: break-word;
+  user-select: all;
 }
 
-.verify-panel__feedback {
+.verify-panel__steps {
   margin: 0;
-  font-size: 0.9rem;
-  color: #0f3d2e;
+  padding: 1.125rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  border-radius: 1.125rem;
+  background: rgba(15, 61, 46, 0.06);
+  border: 1px solid rgba(15, 61, 46, 0.1);
 }
 
-.verify-panel__links {
-  margin: 0.5rem 0 0;
-  font-size: 0.9rem;
+.verify-panel__step {
+  display: flex;
+  gap: 0.875rem;
+  align-items: flex-start;
 }
 
-.verify-panel__link {
-  padding: 0;
-  border: none;
-  background: none;
-  color: #0f3d2e;
+.verify-panel__step-num {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: #0f3d2e;
+  color: #f7f4ec;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.verify-panel__step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.verify-panel__step-title {
+  font-size: 0.9375rem;
   font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
+  color: #0f3d2e;
 }
 
-.verify-panel__link:disabled {
-  opacity: 0.5;
+.verify-panel__step-detail {
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: #666;
+}
+
+.verify-panel__success {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0.875rem;
+  border-radius: 0.875rem;
+  background: rgba(15, 61, 46, 0.08);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #264a38;
+}
+
+.verify-panel__success-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: #0f3d2e;
+  color: #f7f4ec;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.verify-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.verify-panel__btn {
+  width: 100%;
+  padding: 0.9375rem 1rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.verify-panel__btn:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
-.verify-panel__sep {
-  margin: 0 0.35rem;
-  color: rgba(15, 61, 46, 0.35);
+.verify-panel__btn--primary {
+  border: none;
+  background: #0f3d2e;
+  color: #f7f4ec;
+}
+
+.verify-panel__btn--secondary {
+  border: 1px solid rgba(15, 61, 46, 0.35);
+  background: transparent;
+  color: #0f3d2e;
 }
 
 @media (max-width: 480px) {
@@ -102,5 +243,9 @@
   .form-panel input,
   .form-panel form > button[type='submit'] {
     font-size: 0.95rem;
+  }
+
+  .verify-panel__headline h2 {
+    font-size: 1.45rem;
   }
 }

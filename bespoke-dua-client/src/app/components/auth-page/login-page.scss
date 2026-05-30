@@ -24,7 +24,7 @@
 }
 
 
-.form-panel button {
+.form-panel form > button[type='submit'] {
   width: 100%;
   padding: 1.1rem;
   margin-top: 0.5rem;
@@ -35,11 +35,62 @@
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.2s ease;
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
 }
 
-.form-panel button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
+.form-intro {
+  margin: 0;
+  color: rgba(38, 74, 56, 0.85);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.forgot-password-link {
+  align-self: center;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  width: auto;
+  border: none;
+  background: none;
+  color: #1d643a;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: #0f3d2e;
+  }
+}
+
+.form-panel__secondary-btn {
+  width: 100%;
+  padding: 0.95rem;
+  margin-top: 0.35rem;
+  border: 1px solid rgba(15, 61, 46, 0.22);
+  border-radius: 1rem;
+  background: transparent;
+  color: #0f3d2e;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(15, 61, 46, 0.06);
+    border-color: rgba(15, 61, 46, 0.35);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
 }
 
 @media (max-width: 480px) {

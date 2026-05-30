@@ -8,5 +8,9 @@ export const environment = {
   production: false,
   apiUrl: '/api',
   duaUrl: '/api/Dua',
+  /** Supabase email confirmation redirect (must match Authentication → Redirect URLs). */
+  authRedirectUrl: 'http://localhost:4200/auth/callback',
+  /** iOS custom URL scheme for progressive deep linking after email verification. */
+  iosAuthRedirectUrl: 'myapp://auth/callback',
   ...supabaseConfig,
 };
