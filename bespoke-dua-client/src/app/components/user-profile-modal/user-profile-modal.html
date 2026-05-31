@@ -64,6 +64,9 @@
           <div class="delete-confirm">
             <p class="delete-confirm__title">Delete account permanently?</p>
             <p class="delete-confirm__text">This action cannot be undone.</p>
+            @if (authService.error()) {
+              <p class="delete-confirm__error" role="alert">{{ authService.error() }}</p>
+            }
             <div class="delete-confirm__actions">
               <button
                 type="button"

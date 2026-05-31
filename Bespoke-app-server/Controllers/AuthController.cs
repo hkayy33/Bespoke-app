@@ -109,14 +109,14 @@ public class AuthController : ControllerBase
     [HttpPost("sync")]
     public async Task<ActionResult<GetUserDto>> SyncProfile(SyncProfileDto dto)
     {
+        var authUserId = _appUsers.GetAuthUserId(User);
+        if (authUserId is null)
+        {
+            return Unauthorized();
+        }
+
         try
         {
-            var authUserId = _appUsers.GetAuthUserId(User);
-            if (authUserId is null)
-            {
-                return Unauthorized();
-            }
-
             var email = _appUsers.GetEmail(User);
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -176,7 +176,17 @@ public class AuthController : ControllerBase
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to sync Supabase profile.");
+            var existingAfterRace = await _appUsers.FindByAuthUserIdAsync(authUserId.Value);
+            if (existingAfterRace is not null)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Concurrent profile sync for auth user {AuthUserId}; returning existing profile.",
+                    authUserId);
+                return Ok(ToDto(existingAfterRace));
+            }
+
+            _logger.LogError(ex, "Failed to sync Supabase profile for auth user {AuthUserId}.", authUserId);
             return Conflict(new { message = "Could not create your profile. The email or username may already be in use." });
         }
     }
@@ -215,7 +225,25 @@ public class AuthController : ControllerBase
                 });
             }
 
+            if (!_supabaseAdmin.IsKeyMatchedToProject)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new
+                {
+                    message =
+                        "Account deletion is misconfigured: the Supabase service role key does not match Supabase:Url. Update ServiceRoleKey in appsettings.json to the key from the same Supabase project."
+                });
+            }
+
             var deleteResult = await _supabaseAdmin.DeleteAuthUserAsync(supabaseId);
+            if (deleteResult == SupabaseDeleteResult.InvalidConfiguration)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new
+                {
+                    message =
+                        "Account deletion is misconfigured: the Supabase service role key does not match Supabase:Url."
+                });
+            }
+
             if (deleteResult == SupabaseDeleteResult.Failed)
             {
                 return StatusCode(StatusCodes.Status502BadGateway, new

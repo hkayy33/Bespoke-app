@@ -103,6 +103,7 @@ export class UserProfileModal implements OnInit {
       return;
     }
 
+    this.authService.clearError();
     this.deleteInProgress.set(true);
     this.authService.deleteAccount().subscribe((success) => {
       this.deleteInProgress.set(false);

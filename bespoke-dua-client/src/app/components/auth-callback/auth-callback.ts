@@ -36,7 +36,9 @@ export class AuthCallbackPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    tryProgressiveDeepLinkThenWeb(() => this.completeWebAuth());
+    // Establish the web session immediately; don't wait for the deep-link fallback timer.
+    this.completeWebAuth();
+    tryProgressiveDeepLinkThenWeb(() => undefined);
   }
 
   private completeWebAuth(): void {

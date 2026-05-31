@@ -48,6 +48,17 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+var supabaseUrl = app.Configuration["Supabase:Url"];
+var supabaseServiceKey = app.Configuration["Supabase:ServiceRoleKey"];
+if (!string.IsNullOrWhiteSpace(supabaseUrl) && !string.IsNullOrWhiteSpace(supabaseServiceKey) &&
+    !SupabaseConfigHelper.KeysMatchProject(supabaseUrl, supabaseServiceKey))
+{
+    app.Logger.LogWarning(
+        "Supabase ServiceRoleKey is for project {KeyRef} but Supabase:Url is {UrlRef}. Account deletion will fail until they match.",
+        SupabaseConfigHelper.GetProjectRefFromJwt(supabaseServiceKey),
+        SupabaseConfigHelper.GetProjectRefFromUrl(supabaseUrl));
+}
+
 // Configure HTTP pipeline
 if (app.Environment.IsDevelopment())
 {

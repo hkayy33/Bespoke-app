@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthError } from '@supabase/supabase-js';
-import { catchError, from, map, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, from, map, Observable, of, switchMap, tap } from 'rxjs';
 import { getSupabaseClient, isSupabaseConfigured } from '../../core/supabase.client';
 import { getAuthCallbackUrl } from '../../../environments/auth-redirect.config';
 import { environment } from '../../../environments/environment';
@@ -33,6 +33,8 @@ export class AuthService {
   private showPlanModalSignal = signal(false);
   private pendingVerificationEmailSignal = signal<string | null>(this.loadPendingVerificationEmail());
   private passwordRecoverySignal = signal(false);
+  private completeSignInInFlight: Promise<AuthUser | null> | null = null;
+  private authRedirectInProgress = false;
 
   user = computed(() => this.userSignal());
   awaitingEmailVerification = computed(() => this.pendingVerificationEmailSignal() !== null);
@@ -66,6 +68,7 @@ export class AuthService {
       }
 
       if (
+        !this.authRedirectInProgress &&
         (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') &&
         session?.user?.email_confirmed_at
       ) {
@@ -87,24 +90,48 @@ export class AuthService {
       return of(null);
     }
 
+    this.authRedirectInProgress = true;
+
     const pageUrl =
       typeof window !== 'undefined' ? new URL(window.location.href) : null;
     const isRecovery = this.isPasswordRecoveryUrl(pageUrl);
 
     const client = getSupabaseClient();
     const code = pageUrl?.searchParams.get('code') ?? null;
+    const hashTokens = this.parseHashAuthTokens(pageUrl);
 
-    const session$ = code
-      ? from(client.auth.exchangeCodeForSession(code)).pipe(
-          map(({ data, error }) => {
-            if (error) {
-              return null;
-            }
+    let session$ = from(client.auth.getSession()).pipe(map(({ data }) => data.session));
+
+    if (hashTokens) {
+      session$ = from(client.auth.setSession(hashTokens)).pipe(
+        map(({ data, error }) => {
+          if (error) {
+            return null;
+          }
+          this.stripAuthParamsFromUrl();
+          return data.session;
+        })
+      );
+    } else if (code) {
+      session$ = from(client.auth.exchangeCodeForSession(code)).pipe(
+        switchMap(({ data, error }) => {
+          if (!error && data.session) {
             this.stripAuthParamsFromUrl();
-            return data.session;
-          })
-        )
-      : from(client.auth.getSession()).pipe(map(({ data }) => data.session));
+            return of(data.session);
+          }
+
+          // Code may already be consumed; fall back to a persisted session.
+          return from(client.auth.getSession()).pipe(
+            map(({ data: sessionData }) => {
+              if (sessionData.session) {
+                this.stripAuthParamsFromUrl();
+              }
+              return sessionData.session;
+            })
+          );
+        })
+      );
+    }
 
     return session$.pipe(
       switchMap((session) => {
@@ -124,6 +151,9 @@ export class AuthService {
         }
 
         return from(this.completeSupabaseSignIn());
+      }),
+      finalize(() => {
+        this.authRedirectInProgress = false;
       })
     );
   }
@@ -198,6 +228,24 @@ export class AuthService {
     return typeof window !== 'undefined' ? getAuthCallbackUrl() : undefined;
   }
 
+  private parseHashAuthTokens(
+    url: URL | null
+  ): { access_token: string; refresh_token: string } | null {
+    if (!url?.hash) {
+      return null;
+    }
+
+    const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
+    const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
+
+    if (!accessToken || !refreshToken) {
+      return null;
+    }
+
+    return { access_token: accessToken, refresh_token: refreshToken };
+  }
+
   private isPasswordRecoveryUrl(url: URL | null): boolean {
     if (!url) {
       return false;
@@ -235,18 +283,19 @@ export class AuthService {
   }
 
   async getAccessToken(): Promise<string | null> {
-    const mode = this.resolveAuthMode();
-    if (mode === 'legacy') {
+    if (isSupabaseConfigured()) {
+      const { data } = await getSupabaseClient().auth.getSession();
+      if (data.session?.access_token) {
+        return data.session.access_token;
+      }
+    }
+
+    if (this.resolveAuthMode() === 'legacy') {
       const user = this.userSignal();
       return user ? String(user.userId) : null;
     }
 
-    if (!isSupabaseConfigured()) {
-      return null;
-    }
-
-    const { data } = await getSupabaseClient().auth.getSession();
-    return data.session?.access_token ?? null;
+    return null;
   }
 
   login(dto: LoginRequest) {
@@ -453,6 +502,8 @@ export class AuthService {
       return of(false);
     }
 
+    this.errorSignal.set(null);
+
     return this.http.delete<void>(`${this.authUrl}/account`).pipe(
       switchMap(() => this.logout()),
       map(() => true),
@@ -512,21 +563,28 @@ export class AuthService {
     );
   }
 
-  private async completeSupabaseSignIn(): Promise<AuthUser | null> {
+  private completeSupabaseSignIn(): Promise<AuthUser | null> {
+    if (this.completeSignInInFlight) {
+      return this.completeSignInInFlight;
+    }
+
     this.setAuthMode('supabase');
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    const user = await new Promise<AuthUser | null>((resolve) => {
+    this.completeSignInInFlight = new Promise<AuthUser | null>((resolve) => {
       this.syncAppProfile({ signOutOnFailure: false }).subscribe((result) => resolve(result));
+    }).finally(() => {
+      this.completeSignInInFlight = null;
     });
 
-    if (user) {
-      this.clearEmailVerificationStage();
-      this.showAuthPageSignal.set(false);
-    }
-
-    return user;
+    return this.completeSignInInFlight.then((user) => {
+      if (user) {
+        this.clearEmailVerificationStage();
+        this.showAuthPageSignal.set(false);
+      }
+      return user;
+    });
   }
 
   private syncAppProfile(options?: { signOutOnFailure?: boolean }): Observable<AuthUser | null> {
@@ -534,25 +592,42 @@ export class AuthService {
     const username = localStorage.getItem(PENDING_USERNAME_KEY) ?? undefined;
 
     return this.http.post<AuthUser>(`${this.authUrl}/sync`, { username }).pipe(
-      tap((user) => {
-        if (user) {
-          localStorage.removeItem(PENDING_USERNAME_KEY);
-          this.clearEmailVerificationStage();
-          this.userSignal.set(user);
-          this.saveStoredUser(user);
-          this.showAuthPageSignal.set(false);
-        }
-        this.loadingSignal.set(false);
-      }),
+      tap((user) => this.applySyncedUser(user)),
       catchError((error) => {
-        this.loadingSignal.set(false);
-        this.errorSignal.set(error?.error?.message || error?.message || 'Failed to sync profile.');
-        if (signOutOnFailure && isSupabaseConfigured()) {
-          void getSupabaseClient().auth.signOut();
+        if (error?.status === 409) {
+          // Profile may have been created by a concurrent sync during email verification.
+          return this.http.get<AuthUser>(`${this.authUrl}/me`).pipe(
+            tap((user) => this.applySyncedUser(user)),
+            catchError(() => this.failSync(error, signOutOnFailure))
+          );
         }
-        return of(null);
+
+        return this.failSync(error, signOutOnFailure);
       })
     );
+  }
+
+  private applySyncedUser(user: AuthUser | null): void {
+    if (user) {
+      localStorage.removeItem(PENDING_USERNAME_KEY);
+      this.clearEmailVerificationStage();
+      this.userSignal.set(user);
+      this.saveStoredUser(user);
+      this.showAuthPageSignal.set(false);
+    }
+    this.loadingSignal.set(false);
+  }
+
+  private failSync(error: unknown, signOutOnFailure: boolean): Observable<null> {
+    this.loadingSignal.set(false);
+    const httpError = error as { error?: { message?: string }; message?: string };
+    this.errorSignal.set(
+      httpError?.error?.message || httpError?.message || 'Failed to sync profile.'
+    );
+    if (signOutOnFailure && isSupabaseConfigured()) {
+      void getSupabaseClient().auth.signOut();
+    }
+    return of(null);
   }
 
   private shouldTryLegacyLogin(error: AuthError): boolean {
@@ -574,7 +649,7 @@ export class AuthService {
       return mode;
     }
 
-    if (this.userSignal()) {
+    if (!isSupabaseConfigured() && this.userSignal()) {
       return 'legacy';
     }
 
@@ -629,7 +704,7 @@ export class AuthService {
       return stored;
     }
 
-    return this.loadStoredUser() ? 'legacy' : null;
+    return null;
   }
 
   private loadStoredUser(): AuthUser | null {

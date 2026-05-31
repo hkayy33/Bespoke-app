@@ -26,6 +26,11 @@ public class SupabaseAuthAdminService
         !string.IsNullOrWhiteSpace(_configuration["Supabase:Url"]) &&
         !string.IsNullOrWhiteSpace(_configuration["Supabase:ServiceRoleKey"]);
 
+    public bool IsKeyMatchedToProject =>
+        SupabaseConfigHelper.KeysMatchProject(
+            _configuration["Supabase:Url"],
+            _configuration["Supabase:ServiceRoleKey"]);
+
     public async Task<SupabaseDeleteResult> DeleteAuthUserAsync(Guid authUserId, CancellationToken cancellationToken = default)
     {
         var baseUrl = (_configuration["Supabase:Url"] ?? string.Empty).TrimEnd('/');
@@ -35,6 +40,15 @@ public class SupabaseAuthAdminService
         {
             _logger.LogWarning("Supabase auth user delete skipped: Url or ServiceRoleKey is not configured.");
             return SupabaseDeleteResult.NotConfigured;
+        }
+
+        if (!SupabaseConfigHelper.KeysMatchProject(baseUrl, serviceRoleKey))
+        {
+            _logger.LogError(
+                "Supabase ServiceRoleKey is for project {KeyRef} but Supabase:Url is {UrlRef}.",
+                SupabaseConfigHelper.GetProjectRefFromJwt(serviceRoleKey),
+                SupabaseConfigHelper.GetProjectRefFromUrl(baseUrl));
+            return SupabaseDeleteResult.InvalidConfiguration;
         }
 
         var client = _httpClientFactory.CreateClient();
@@ -67,5 +81,6 @@ public enum SupabaseDeleteResult
 {
     Success,
     NotConfigured,
+    InvalidConfiguration,
     Failed,
 }

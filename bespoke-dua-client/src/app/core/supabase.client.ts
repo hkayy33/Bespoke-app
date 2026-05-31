@@ -17,7 +17,8 @@ export function getSupabaseClient(): SupabaseClient {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true,
+        // Session exchange is handled explicitly in AuthService.handleAuthRedirect().
+        detectSessionInUrl: false,
       },
     });
   }
