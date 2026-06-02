@@ -314,6 +314,13 @@ h2 {
   font-size: 0.84rem;
 }
 
+.delete-confirm__error {
+  margin: 0.55rem 0 0;
+  color: #8d2f43;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
 .delete-confirm__actions {
   margin-top: 0.72rem;
   display: flex;

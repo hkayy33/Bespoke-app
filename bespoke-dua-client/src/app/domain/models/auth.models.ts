@@ -21,3 +21,6 @@ export interface LoginResponse {
   message: string;
   user: AuthUser;
 }
+
+export type AuthMode = 'legacy' | 'supabase';
+

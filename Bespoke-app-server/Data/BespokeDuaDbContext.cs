@@ -31,8 +31,9 @@ namespace BespokeDuaApi.Data
                       .IsRequired()
                       .HasMaxLength(255);
 
-                entity.Property(e => e.HashedPassword)
-                      .IsRequired();
+                entity.Property(e => e.AuthUserId);
+
+                entity.Property(e => e.HashedPassword);
 
                 entity.Property(e => e.Plan)
                       .IsRequired()
@@ -45,6 +46,9 @@ namespace BespokeDuaApi.Data
                       .IsUnique();
 
                 entity.HasIndex(e => e.Email)
+                      .IsUnique();
+
+                entity.HasIndex(e => e.AuthUserId)
                       .IsUnique();
 
                 entity.HasMany(e => e.SavedDuas)

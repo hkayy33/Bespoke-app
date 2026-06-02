@@ -1,21 +1,30 @@
 <div class="modal-backdrop" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="auth-card">
-      <div class="auth-toggle">
-        <button
-          type="button"
-          (click)="selectTab('login')"
-          [class.active]="activeTab() === 'login'">
-          Login
-        </button>
+      @if (showAuthToggle()) {
+        <div class="auth-toggle">
+          <button
+            type="button"
+            (click)="selectTab('login')"
+            [class.active]="activeTab() === 'login'">
+            Login
+          </button>
 
-        <button
-          type="button"
-          (click)="selectTab('register')"
-          [class.active]="activeTab() === 'register'">
-          Register
-        </button>
-      </div>
+          <button
+            type="button"
+            (click)="selectTab('register')"
+            [class.active]="activeTab() === 'register'">
+            Register
+          </button>
+        </div>
+      } @else {
+        <div class="auth-verify-nav">
+          <button type="button" class="auth-verify-nav__back" (click)="editRegistrationFromVerify()">
+            <span class="auth-verify-nav__chevron" aria-hidden="true">‹</span>
+            Edit registration
+          </button>
+        </div>
+      }
 
       <div class="auth-form-container">
         <app-login-page *ngIf="activeTab() === 'login'"></app-login-page>
@@ -29,7 +38,7 @@
         <button
           type="button"
           class="logout-button"
-          (click)="authService.logout()">
+          (click)="authService.logout().subscribe()">
           Logout
         </button>
       </div>

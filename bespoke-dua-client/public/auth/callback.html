@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Opening Bespoke Dua…</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f1419;
+      color: #e8eaed;
+      text-align: center;
+      padding: 1.5rem;
+    }
+    p { opacity: 0.85; max-width: 20rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <p>Opening the app… If nothing happens, you’ll continue in your browser shortly.</p>
+  <script>
+    (function () {
+      var SCHEME = 'myapp';
+      var FALLBACK_MS = 1500;
+      var search = window.location.search;
+      var hash = window.location.hash;
+
+      if (!search && !hash) {
+        window.location.replace('/');
+        return;
+      }
+
+      var deepLink = SCHEME + '://auth/callback' + (search || hash);
+      var webFallback = window.location.origin + '/' + (search || '') + (hash || '');
+      var timer;
+
+      function cancel() {
+        if (timer) {
+          clearTimeout(timer);
+          timer = undefined;
+        }
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') {
+          cancel();
+        }
+      });
+
+      timer = setTimeout(function () {
+        if (document.visibilityState === 'hidden') {
+          return;
+        }
+        window.location.replace(webFallback);
+      }, FALLBACK_MS);
+
+      window.location.href = deepLink;
+    })();
+  </script>
+</body>
+</html>
