@@ -3,6 +3,7 @@ using System;
 using BespokeDuaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bespoke_app_server.Migrations
 {
     [DbContext(typeof(BespokeDuaDbContext))]
-    partial class BespokeDuaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260704000058_AddDuaCollections")]
+    partial class AddDuaCollections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,40 +153,6 @@ namespace Bespoke_app_server.Migrations
                     b.ToTable("SavedDuas");
                 });
 
-            modelBuilder.Entity("BespokeDuaApi.Models.SubscriptionOwnership", b =>
-                {
-                    b.Property<int>("SubscriptionOwnershipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SubscriptionOwnershipId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("OriginalTransactionId")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SubscriptionOwnershipId");
-
-                    b.HasIndex("OriginalTransactionId")
-                        .IsUnique();
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SubscriptionOwnerships", (string)null);
-                });
-
             modelBuilder.Entity("BespokeDuaApi.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -191,9 +160,6 @@ namespace Bespoke_app_server.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
-
-                    b.Property<Guid?>("AuthUserId")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -207,6 +173,7 @@ namespace Bespoke_app_server.Migrations
                         .HasColumnType("character varying(255)");
 
                     b.Property<string>("HashedPassword")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastRequestDate")
@@ -225,9 +192,6 @@ namespace Bespoke_app_server.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("AuthUserId")
-                        .IsUnique();
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -308,17 +272,6 @@ namespace Bespoke_app_server.Migrations
                 {
                     b.HasOne("BespokeDuaApi.Models.User", "User")
                         .WithMany("SavedDuas")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BespokeDuaApi.Models.SubscriptionOwnership", b =>
-                {
-                    b.HasOne("BespokeDuaApi.Models.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

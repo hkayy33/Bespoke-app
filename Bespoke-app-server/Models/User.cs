@@ -15,5 +15,6 @@ namespace BespokeDuaApi.Models
         public DateTime CreatedAt { get; set; }
 
         public ICollection<SavedDua> SavedDuas { get; set; } = new List<SavedDua>();
+        public ICollection<DuaCollection> DuaCollections { get; set; } = new List<DuaCollection>();
     }
 }

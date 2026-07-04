@@ -14,6 +14,10 @@ namespace BespokeDuaApi.Data
         public DbSet<SavedDua> SavedDuas { get; set; } = null!;
         public DbSet<UserUsage> UserUsages { get; set; } = null!;
         public DbSet<SubscriptionOwnership> SubscriptionOwnerships { get; set; } = null!;
+        public DbSet<FeelingLabel> FeelingLabels { get; set; } = null!;
+        public DbSet<AllahName> AllahNames { get; set; } = null!;
+        public DbSet<DuaCollection> DuaCollections { get; set; } = null!;
+        public DbSet<DuaCollectionItem> DuaCollectionItems { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +58,11 @@ namespace BespokeDuaApi.Data
                 entity.HasMany(e => e.SavedDuas)
                       .WithOne(d => d.User)
                       .HasForeignKey(d => d.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.DuaCollections)
+                      .WithOne(c => c.User)
+                      .HasForeignKey(c => c.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -103,6 +112,100 @@ namespace BespokeDuaApi.Data
                     .WithMany()
                     .HasForeignKey(e => e.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<FeelingLabel>(entity =>
+            {
+                entity.HasKey(e => e.FeelingLabelId);
+
+                entity.Property(e => e.FeelingLabelId)
+                      .ValueGeneratedNever();
+
+                entity.Property(e => e.Label)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.DisplayOrder)
+                      .IsRequired();
+
+                entity.HasIndex(e => e.Label)
+                      .IsUnique();
+
+                entity.HasMany(e => e.Names)
+                      .WithOne(n => n.FeelingLabel)
+                      .HasForeignKey(n => n.FeelingLabelId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AllahName>(entity =>
+            {
+                entity.HasKey(e => e.Number);
+
+                entity.Property(e => e.Number)
+                      .ValueGeneratedNever();
+
+                entity.Property(e => e.Arabic)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.Transliteration)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.Translation)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.Meaning)
+                      .IsRequired();
+
+                entity.Property(e => e.SortOrder)
+                      .IsRequired();
+
+                entity.HasIndex(e => new { e.FeelingLabelId, e.SortOrder });
+            });
+
+            modelBuilder.Entity<DuaCollection>(entity =>
+            {
+                entity.HasKey(e => e.CollectionId);
+
+                entity.Property(e => e.CollectionId)
+                      .ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                      .IsRequired()
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.Description)
+                      .HasMaxLength(2000);
+
+                entity.Property(e => e.CreatedAt)
+                      .IsRequired();
+
+                entity.Property(e => e.UpdatedAt)
+                      .IsRequired();
+
+                entity.HasIndex(e => e.UserId);
+            });
+
+            modelBuilder.Entity<DuaCollectionItem>(entity =>
+            {
+                entity.HasKey(e => new { e.CollectionId, e.DuaId });
+
+                entity.Property(e => e.SortOrder)
+                      .IsRequired();
+
+                entity.HasOne(e => e.Collection)
+                      .WithMany(c => c.Items)
+                      .HasForeignKey(e => e.CollectionId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.SavedDua)
+                      .WithMany(d => d.CollectionItems)
+                      .HasForeignKey(e => e.DuaId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(e => e.DuaId);
             });
         }
     }
