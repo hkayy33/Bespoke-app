@@ -41,3 +41,10 @@ public class MakeDuaResultDto
     public int DuaCount { get; set; }
     public bool HasUserMadeDua { get; set; }
 }
+
+public class DuaFeedPostingQuotaDto
+{
+    public int UsedToday { get; set; }
+    public int DailyLimit { get; set; }
+    public int RemainingToday { get; set; }
+}
