@@ -3,6 +3,7 @@ using System;
 using BespokeDuaApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bespoke_app_server.Migrations
 {
     [DbContext(typeof(BespokeDuaDbContext))]
-    partial class BespokeDuaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260705220304_AddSavedSunnahDuas")]
+    partial class AddSavedSunnahDuas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,104 +94,20 @@ namespace Bespoke_app_server.Migrations
 
             modelBuilder.Entity("BespokeDuaApi.Models.DuaCollectionItem", b =>
                 {
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("CollectionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("DuaId")
+                    b.Property<Guid>("DuaId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("SunnahDuaId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ItemId");
+                    b.HasKey("CollectionId", "DuaId");
 
                     b.HasIndex("DuaId");
 
-                    b.HasIndex("SunnahDuaId");
-
-                    b.HasIndex("CollectionId", "DuaId")
-                        .IsUnique()
-                        .HasFilter("\"DuaId\" IS NOT NULL");
-
-                    b.HasIndex("CollectionId", "SunnahDuaId")
-                        .IsUnique()
-                        .HasFilter("\"SunnahDuaId\" IS NOT NULL");
-
                     b.ToTable("DuaCollectionItems");
-                });
-
-            modelBuilder.Entity("BespokeDuaApi.Models.DuaFeedLike", b =>
-                {
-                    b.Property<Guid>("LikeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("LikeId");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("PostId", "UserId")
-                        .IsUnique();
-
-                    b.ToTable("DuaFeedLikes");
-                });
-
-            modelBuilder.Entity("BespokeDuaApi.Models.DuaFeedPost", b =>
-                {
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsAnonymous")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("SavedDuaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("SavedSunnahDuaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PostId");
-
-                    b.HasIndex("ExpiresAt");
-
-                    b.HasIndex("SavedDuaId");
-
-                    b.HasIndex("SavedSunnahDuaId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserId", "ExpiresAt");
-
-                    b.ToTable("DuaFeedPosts");
                 });
 
             modelBuilder.Entity("BespokeDuaApi.Models.FeelingLabel", b =>
@@ -402,62 +321,12 @@ namespace Bespoke_app_server.Migrations
                     b.HasOne("BespokeDuaApi.Models.SavedDua", "SavedDua")
                         .WithMany("CollectionItems")
                         .HasForeignKey("DuaId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("BespokeDuaApi.Models.SavedSunnahDua", "SavedSunnahDua")
-                        .WithMany("CollectionItems")
-                        .HasForeignKey("SunnahDuaId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Collection");
 
                     b.Navigation("SavedDua");
-
-                    b.Navigation("SavedSunnahDua");
-                });
-
-            modelBuilder.Entity("BespokeDuaApi.Models.DuaFeedLike", b =>
-                {
-                    b.HasOne("BespokeDuaApi.Models.DuaFeedPost", "Post")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BespokeDuaApi.Models.User", "User")
-                        .WithMany("DuaFeedLikes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BespokeDuaApi.Models.DuaFeedPost", b =>
-                {
-                    b.HasOne("BespokeDuaApi.Models.SavedDua", "SavedDua")
-                        .WithMany()
-                        .HasForeignKey("SavedDuaId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("BespokeDuaApi.Models.SavedSunnahDua", "SavedSunnahDua")
-                        .WithMany()
-                        .HasForeignKey("SavedSunnahDuaId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("BespokeDuaApi.Models.User", "User")
-                        .WithMany("DuaFeedPosts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SavedDua");
-
-                    b.Navigation("SavedSunnahDua");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BespokeDuaApi.Models.SavedDua", b =>
@@ -509,11 +378,6 @@ namespace Bespoke_app_server.Migrations
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("BespokeDuaApi.Models.DuaFeedPost", b =>
-                {
-                    b.Navigation("Likes");
-                });
-
             modelBuilder.Entity("BespokeDuaApi.Models.FeelingLabel", b =>
                 {
                     b.Navigation("Names");
@@ -524,18 +388,9 @@ namespace Bespoke_app_server.Migrations
                     b.Navigation("CollectionItems");
                 });
 
-            modelBuilder.Entity("BespokeDuaApi.Models.SavedSunnahDua", b =>
-                {
-                    b.Navigation("CollectionItems");
-                });
-
             modelBuilder.Entity("BespokeDuaApi.Models.User", b =>
                 {
                     b.Navigation("DuaCollections");
-
-                    b.Navigation("DuaFeedLikes");
-
-                    b.Navigation("DuaFeedPosts");
 
                     b.Navigation("SavedDuas");
 

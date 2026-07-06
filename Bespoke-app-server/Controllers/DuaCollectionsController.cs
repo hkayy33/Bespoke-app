@@ -47,28 +47,7 @@ public class DuaCollectionsController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<DuaCollectionDto>> GetCollection(Guid id)
     {
-        var collection = await _context.DuaCollections
-            .AsNoTracking()
-            .Where(c => c.CollectionId == id)
-            .Select(c => new DuaCollectionDto
-            {
-                CollectionId = c.CollectionId,
-                Name = c.Name,
-                Description = c.Description,
-                CreatedAt = c.CreatedAt,
-                UpdatedAt = c.UpdatedAt,
-                SavedDuas = c.Items
-                    .OrderBy(i => i.SortOrder)
-                    .Select(i => new SavedDuaDto
-                    {
-                        DuaId = i.SavedDua.DuaId,
-                        Dua = i.SavedDua.Dua,
-                        CreatedAt = i.SavedDua.CreatedAt
-                    })
-                    .ToList()
-            })
-            .FirstOrDefaultAsync();
-
+        var collection = await LoadCollectionDtoAsync(id);
         if (collection is null)
             return NotFound();
 
@@ -87,7 +66,7 @@ public class DuaCollectionsController : ControllerBase
             return NotFound("User not found.");
 
         var distinctDuaIds = dto.DuaIds.Distinct().ToList();
-        var validationError = await ValidateDuaIdsForUserAsync(dto.UserId, distinctDuaIds);
+        var (validationError, items) = await BuildCollectionItemsAsync(dto.UserId, distinctDuaIds);
         if (validationError is not null)
             return BadRequest(validationError);
 
@@ -100,13 +79,7 @@ public class DuaCollectionsController : ControllerBase
             Description = string.IsNullOrWhiteSpace(dto.Description) ? null : dto.Description.Trim(),
             CreatedAt = now,
             UpdatedAt = now,
-            Items = distinctDuaIds
-                .Select((duaId, index) => new DuaCollectionItem
-                {
-                    DuaId = duaId,
-                    SortOrder = index
-                })
-                .ToList()
+            Items = items
         };
 
         _context.DuaCollections.Add(collection);
@@ -133,7 +106,7 @@ public class DuaCollectionsController : ControllerBase
             return NotFound();
 
         var distinctDuaIds = dto.DuaIds.Distinct().ToList();
-        var validationError = await ValidateDuaIdsForUserAsync(collection.UserId, distinctDuaIds);
+        var (validationError, items) = await BuildCollectionItemsAsync(collection.UserId, distinctDuaIds);
         if (validationError is not null)
             return BadRequest(validationError);
 
@@ -142,14 +115,9 @@ public class DuaCollectionsController : ControllerBase
         collection.UpdatedAt = DateTime.UtcNow;
 
         _context.DuaCollectionItems.RemoveRange(collection.Items);
-        collection.Items = distinctDuaIds
-            .Select((duaId, index) => new DuaCollectionItem
-            {
-                CollectionId = collection.CollectionId,
-                DuaId = duaId,
-                SortOrder = index
-            })
-            .ToList();
+        foreach (var item in items)
+            item.CollectionId = collection.CollectionId;
+        collection.Items = items;
 
         await _context.SaveChangesAsync();
 
@@ -170,21 +138,47 @@ public class DuaCollectionsController : ControllerBase
         return NoContent();
     }
 
-    private async Task<string?> ValidateDuaIdsForUserAsync(int userId, IReadOnlyList<Guid> duaIds)
+    private async Task<(string? Error, List<DuaCollectionItem> Items)> BuildCollectionItemsAsync(
+        int userId,
+        IReadOnlyList<Guid> duaIds)
     {
         if (duaIds.Count == 0)
-            return null;
+            return (null, new List<DuaCollectionItem>());
 
-        var ownedCount = await _context.SavedDuas
-            .CountAsync(d => d.UserId == userId && duaIds.Contains(d.DuaId));
+        var ownedSavedDuaIds = await _context.SavedDuas
+            .AsNoTracking()
+            .Where(d => d.UserId == userId && duaIds.Contains(d.DuaId))
+            .Select(d => d.DuaId)
+            .ToListAsync();
 
-        if (ownedCount != duaIds.Count)
-            return "One or more saved duas were not found for this user.";
+        var ownedSunnahDuaIds = await _context.SavedSunnahDuas
+            .AsNoTracking()
+            .Where(d => d.UserId == userId && duaIds.Contains(d.SunnahDuaId))
+            .Select(d => d.SunnahDuaId)
+            .ToListAsync();
 
-        return null;
+        var ownedIds = ownedSavedDuaIds
+            .Concat(ownedSunnahDuaIds)
+            .ToHashSet();
+
+        if (ownedIds.Count != duaIds.Count)
+            return ("One or more saved duas were not found for this user.", new List<DuaCollectionItem>());
+
+        var savedDuaIdSet = ownedSavedDuaIds.ToHashSet();
+        var items = duaIds
+            .Select((duaId, index) => new DuaCollectionItem
+            {
+                ItemId = Guid.NewGuid(),
+                DuaId = savedDuaIdSet.Contains(duaId) ? duaId : null,
+                SunnahDuaId = savedDuaIdSet.Contains(duaId) ? null : duaId,
+                SortOrder = index
+            })
+            .ToList();
+
+        return (null, items);
     }
 
-    private async Task<DuaCollectionDto> LoadCollectionDtoAsync(Guid collectionId)
+    private async Task<DuaCollectionDto?> LoadCollectionDtoAsync(Guid collectionId)
     {
         return await _context.DuaCollections
             .AsNoTracking()
@@ -200,12 +194,12 @@ public class DuaCollectionsController : ControllerBase
                     .OrderBy(i => i.SortOrder)
                     .Select(i => new SavedDuaDto
                     {
-                        DuaId = i.SavedDua.DuaId,
-                        Dua = i.SavedDua.Dua,
-                        CreatedAt = i.SavedDua.CreatedAt
+                        DuaId = i.DuaId ?? i.SunnahDuaId!.Value,
+                        Dua = i.DuaId != null ? i.SavedDua!.Dua : i.SavedSunnahDua!.SunnahDua,
+                        CreatedAt = i.DuaId != null ? i.SavedDua!.CreatedAt : i.SavedSunnahDua!.CreatedAt
                     })
                     .ToList()
             })
-            .FirstAsync();
+            .FirstOrDefaultAsync();
     }
 }
