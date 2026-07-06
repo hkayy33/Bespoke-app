@@ -131,17 +131,17 @@ public class DuaFeedController : ControllerBase
     }
 
     /// <summary>
-    /// Returns the caller's current active post, if any.
+    /// Returns all of the caller's current active (non-expired) posts, newest first.
     /// </summary>
     [HttpGet("user/{userId:int}/active")]
-    public async Task<ActionResult<DuaFeedPostDto>> GetActivePostForUser(int userId)
+    public async Task<ActionResult<List<DuaFeedPostDto>>> GetActivePostsForUser(int userId)
     {
         var userExists = await _context.Users.AnyAsync(u => u.UserId == userId);
         if (!userExists)
             return NotFound("User not found.");
 
         var now = DateTime.UtcNow;
-        var post = await _context.DuaFeedPosts
+        var posts = await _context.DuaFeedPosts
             .AsNoTracking()
             .Where(p => p.UserId == userId && p.ExpiresAt > now)
             .OrderByDescending(p => p.CreatedAt)
@@ -157,12 +157,31 @@ public class DuaFeedController : ControllerBase
                 HasUserMadeDua = p.Likes.Any(a => a.UserId == userId),
                 IsOwnPost = true
             })
-            .FirstOrDefaultAsync();
+            .ToListAsync();
 
-        if (post is null)
-            return NotFound();
+        return Ok(posts);
+    }
 
-        return Ok(post);
+    /// <summary>
+    /// How many feed posts the user has created in the current UTC day (source of truth for daily limits).
+    /// </summary>
+    [HttpGet("user/{userId:int}/posting-quota")]
+    public async Task<ActionResult<DuaFeedPostingQuotaDto>> GetPostingQuota(int userId)
+    {
+        var userExists = await _context.Users.AnyAsync(u => u.UserId == userId);
+        if (!userExists)
+            return NotFound("User not found.");
+
+        var startOfUtcDay = DateTime.UtcNow.Date;
+        var usedToday = await _context.DuaFeedPosts
+            .CountAsync(p => p.UserId == userId && p.CreatedAt >= startOfUtcDay);
+
+        return Ok(new DuaFeedPostingQuotaDto
+        {
+            UsedToday = usedToday,
+            DailyLimit = MaxPostsPerDay,
+            RemainingToday = Math.Max(0, MaxPostsPerDay - usedToday)
+        });
     }
 
     /// <summary>
