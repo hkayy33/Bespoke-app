@@ -43,6 +43,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<UsageService>();
 builder.Services.AddScoped<AppUserService>();
 builder.Services.AddScoped<SupabaseAuthAdminService>();
+builder.Services.AddScoped<UmmahApiService>();
 builder.Services.AddAppAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
