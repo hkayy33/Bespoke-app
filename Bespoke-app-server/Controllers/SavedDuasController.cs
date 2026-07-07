@@ -98,6 +98,35 @@ namespace BespokeDuaApi.Controllers
             return CreatedAtAction(nameof(GetSavedDua), new { id = savedDua.DuaId }, savedDuaDto);
         }
 
+        // PUT: api/SavedDuas/{id}
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult<SavedDuaDto>> UpdateSavedDua(Guid id, UpdateSavedDuaDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Dua))
+            {
+                return BadRequest("Dua is required.");
+            }
+
+            var savedDua = await _context.SavedDuas.FindAsync(id);
+
+            if (savedDua == null)
+            {
+                return NotFound();
+            }
+
+            savedDua.Dua = dto.Dua;
+            await _context.SaveChangesAsync();
+
+            var savedDuaDto = new SavedDuaDto
+            {
+                DuaId = savedDua.DuaId,
+                Dua = savedDua.Dua,
+                CreatedAt = savedDua.CreatedAt
+            };
+
+            return Ok(savedDuaDto);
+        }
+
         // DELETE: api/SavedDuas/{id}
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteSavedDua(Guid id)
