@@ -192,6 +192,37 @@ public class AuthController : ControllerBase
     }
 
     [Authorize(AuthenticationSchemes = AppAuthenticationExtensions.CombinedScheme)]
+    [HttpPatch("username")]
+    public async Task<ActionResult<GetUserDto>> UpdateUsername(UpdateUsernameDto dto)
+    {
+        var user = await _appUsers.GetCurrentUserAsync(User);
+        if (user is null)
+        {
+            return Unauthorized(new { message = "Profile not found." });
+        }
+
+        if (!UsernameValidator.TryValidate(dto.Username, out var normalized, out var validationError))
+        {
+            return BadRequest(new { message = validationError });
+        }
+
+        if (string.Equals(user.Username, normalized, StringComparison.Ordinal))
+        {
+            return Ok(ToDto(user));
+        }
+
+        if (await _context.Users.AnyAsync(u => u.Username == normalized && u.UserId != user.UserId))
+        {
+            return BadRequest(new { message = "Username already exists." });
+        }
+
+        user.Username = normalized;
+        await _context.SaveChangesAsync();
+
+        return Ok(ToDto(user));
+    }
+
+    [Authorize(AuthenticationSchemes = AppAuthenticationExtensions.CombinedScheme)]
     [HttpGet("me")]
     public async Task<ActionResult<GetUserDto>> GetCurrentUser()
     {
