@@ -196,7 +196,8 @@ public class DuaCollectionsController : ControllerBase
                     {
                         DuaId = i.DuaId ?? i.SunnahDuaId!.Value,
                         Dua = i.DuaId != null ? i.SavedDua!.Dua : i.SavedSunnahDua!.SunnahDua,
-                        CreatedAt = i.DuaId != null ? i.SavedDua!.CreatedAt : i.SavedSunnahDua!.CreatedAt
+                        CreatedAt = i.DuaId != null ? i.SavedDua!.CreatedAt : i.SavedSunnahDua!.CreatedAt,
+                        UpdatedAt = i.DuaId != null ? i.SavedDua!.UpdatedAt : null
                     })
                     .ToList()
             })

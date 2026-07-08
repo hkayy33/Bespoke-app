@@ -36,7 +36,8 @@ namespace BespokeDuaApi.Controllers
                 {
                     DuaId = d.DuaId,
                     Dua = d.Dua,
-                    CreatedAt = d.CreatedAt
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt
                 })
                 .ToListAsync();
 
@@ -60,7 +61,8 @@ namespace BespokeDuaApi.Controllers
             {
                 DuaId = savedDua.DuaId,
                 Dua = savedDua.Dua,
-                CreatedAt = savedDua.CreatedAt
+                CreatedAt = savedDua.CreatedAt,
+                UpdatedAt = savedDua.UpdatedAt
             };
 
             return Ok(dto);
@@ -92,7 +94,8 @@ namespace BespokeDuaApi.Controllers
             {
                 DuaId = savedDua.DuaId,
                 Dua = savedDua.Dua,
-                CreatedAt = savedDua.CreatedAt
+                CreatedAt = savedDua.CreatedAt,
+                UpdatedAt = savedDua.UpdatedAt
             };
 
             return CreatedAtAction(nameof(GetSavedDua), new { id = savedDua.DuaId }, savedDuaDto);
@@ -115,13 +118,15 @@ namespace BespokeDuaApi.Controllers
             }
 
             savedDua.Dua = dto.Dua;
+            savedDua.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             var savedDuaDto = new SavedDuaDto
             {
                 DuaId = savedDua.DuaId,
                 Dua = savedDua.Dua,
-                CreatedAt = savedDua.CreatedAt
+                CreatedAt = savedDua.CreatedAt,
+                UpdatedAt = savedDua.UpdatedAt
             };
 
             return Ok(savedDuaDto);
