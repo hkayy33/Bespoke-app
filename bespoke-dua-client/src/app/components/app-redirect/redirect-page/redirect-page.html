@@ -12,6 +12,7 @@
           Create personal duas, discover Sunnah supplications, and reflect on the 99 Names — all in one place.
         </p>
         <div class="hero__cta-row">
+          <a class="hero__try-link" href="#try-me">Try Me</a>
           <a
             class="store-badge"
             [href]="appStoreUrl"
@@ -55,6 +56,119 @@
         BespokeDua is built on this idea, connecting your personal du&apos;as to the reassuring ropes
         our Lord has hung down, so you can ask with certainty, hope, and sincerity.
       </p>
+    </div>
+  </section>
+
+  <section class="try" id="try-me" aria-labelledby="try-heading">
+    <div class="try__inner">
+      <p class="try__kicker">Try Me</p>
+      <h2 id="try-heading" class="try__title">Write what’s on your heart</h2>
+      <p class="try__lede">
+        Receive a personalised dua crafted with Allah’s names — up to
+        {{ dailyLimit }} free tries a day on the web.
+      </p>
+      <p class="try__remaining" [class.try__remaining--empty]="limitReached()">
+        @if (limitReached()) {
+          No free tries left today
+        } @else {
+          {{ remaining() }} of {{ dailyLimit }} free tries remaining today
+        }
+      </p>
+
+      <form class="try__form" (ngSubmit)="generate()">
+        <label class="try__label" for="try-intention">Your intention</label>
+        <textarea
+          id="try-intention"
+          class="try__input"
+          name="intention"
+          rows="4"
+          maxlength="500"
+          [ngModel]="intention()"
+          (ngModelChange)="intention.set($event)"
+          [disabled]="loading() || limitReached()"
+          placeholder="Example: I feel anxious about my exams and need ease and clarity…"
+        ></textarea>
+
+        <button
+          type="submit"
+          class="try__submit"
+          [disabled]="!canSubmit()"
+        >
+          @if (loading()) {
+            Crafting your dua…
+          } @else if (limitReached()) {
+            Daily limit reached
+          } @else {
+            Bespoke my dua
+          }
+        </button>
+      </form>
+
+      @if (error()) {
+        <p class="try__error" role="alert">{{ error() }}</p>
+      }
+
+      @if (limitReached()) {
+        <div class="try__upsell">
+          <p class="try__upsell-text">
+            Want more? Download Bespoke Dua for unlimited generations, Sunnah matching, and your
+            personal library.
+          </p>
+          <a
+            class="store-badge store-badge--cta"
+            [href]="appStoreUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/images/download-on-the-app-store.svg"
+              alt="Download on the App Store"
+              width="180"
+              height="60"
+            />
+          </a>
+        </div>
+      }
+
+      @if (results().length) {
+        <div class="try__results" aria-live="polite">
+          <h3 class="try__results-title">Your bespoke duas</h3>
+          <ul class="try__list">
+            @for (dua of results(); track $index) {
+              <li class="try__card">
+                <p class="try__dua">{{ dua.duaText }}</p>
+                @if (dua.explanations.length) {
+                  <details class="try__reflect">
+                    <summary>View reflection</summary>
+                    <ul class="try__names">
+                      @for (exp of dua.explanations; track $index) {
+                        <li>
+                          <span class="try__name">{{ exp.name }}</span>
+                          <span class="try__name-text">{{ exp.explanation }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </details>
+                }
+                <button
+                  type="button"
+                  class="try__copy"
+                  (click)="copyDua(dua.duaText, $index)"
+                >
+                  @if (copiedIndex() === $index) {
+                    Copied
+                  } @else {
+                    Copy
+                  }
+                </button>
+              </li>
+            }
+          </ul>
+          <button type="button" class="try__clear" (click)="clearResults()">
+            Clear
+          </button>
+        </div>
+      }
     </div>
   </section>
 
