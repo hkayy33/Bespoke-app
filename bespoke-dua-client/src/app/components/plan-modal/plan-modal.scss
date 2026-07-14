@@ -1,0 +1,137 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 20, 26, 0.58);
+  z-index: 1150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content {
+  position: relative;
+  width: min(620px, 100%);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem 1.4rem 1.4rem;
+  box-shadow: 0 24px 52px rgba(13, 27, 34, 0.28);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid #d4d4d4;
+  background: #ffffff;
+  color: #444;
+  cursor: pointer;
+}
+
+h2 {
+  margin: 0;
+  text-align: center;
+  color: #133e31;
+}
+
+.subtitle {
+  margin: 0.4rem 0 1.2rem;
+  text-align: center;
+  color: #5c6461;
+}
+
+.plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.plan-card {
+  appearance: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 14px;
+  border: 1px solid #d8e1dc;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(35, 114, 83, 0.25);
+  }
+}
+
+.current-plan {
+  border-color: rgba(20, 86, 58, 0.45);
+  background: #f6faf8;
+}
+
+.selected {
+  border-color: rgba(200, 155, 60, 0.85);
+  box-shadow: 0 8px 18px rgba(200, 155, 60, 0.22);
+}
+
+.plan-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2f2a;
+}
+
+.plan-price {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #133e31;
+}
+
+.plan-feature {
+  margin: 0;
+  color: #5b6662;
+}
+
+.plan-badge {
+  width: fit-content;
+  margin-top: 0.3rem;
+  background: #e9f3ef;
+  color: #14563a;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+}
+
+.upgrade-btn {
+  width: 100%;
+  margin-top: 1.2rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #c89b3c, #a97722);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    background: #c8c8c8;
+    cursor: not-allowed;
+  }
+}
+
+@media (max-width: 680px) {
+  .plans {
+    grid-template-columns: 1fr;
+  }
+}

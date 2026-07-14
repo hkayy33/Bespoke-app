@@ -1,69 +1,155 @@
 <section class="form-panel">
-  <h2>Create an Account</h2>
+  @if (step() === 'form') {
+    <h2>Create an Account</h2>
 
-  <form [formGroup]="form" (ngSubmit)="register()" novalidate>
-    <div class="field-group">
-      <label class="field-label" for="register-username">Username</label>
-      <input
-        id="register-username"
-        type="text"
-        formControlName="username"
-        autocomplete="username"
-        [class.input-has-error]="showFieldError(form.controls.username)"
-        class="input-control"
-      />
-      <p class="field-hint">2–100 characters. Letters, numbers, underscores, or hyphens.</p>
-      @if (usernameError(); as msg) {
-        <p class="field-error" role="alert">
-          <span class="field-error__icon" aria-hidden="true">!</span>
+    <form [formGroup]="form" (ngSubmit)="register()" novalidate>
+      <div class="field-group">
+        <label class="field-label" for="register-username">Username</label>
+        <input
+          id="register-username"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          [class.input-has-error]="showFieldError(form.controls.username)"
+          class="input-control"
+        />
+        <p class="field-hint">2–100 characters. Letters, numbers, underscores, or hyphens.</p>
+        @if (usernameError(); as msg) {
+          <p class="field-error" role="alert">
+            <span class="field-error__icon" aria-hidden="true">!</span>
+            <span>{{ msg }}</span>
+          </p>
+        }
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="register-email">Email</label>
+        <input
+          id="register-email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          [class.input-has-error]="showFieldError(form.controls.email)"
+          class="input-control"
+        />
+        @if (emailError(); as msg) {
+          <p class="field-error" role="alert">
+            <span class="field-error__icon" aria-hidden="true">!</span>
+            <span>{{ msg }}</span>
+          </p>
+        }
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="register-password">Password</label>
+        <input
+          id="register-password"
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+          [class.input-has-error]="showFieldError(form.controls.password)"
+          class="input-control"
+        />
+        @if (passwordError(); as msg) {
+          <p class="field-error" role="alert">
+            <span class="field-error__icon" aria-hidden="true">!</span>
+            <span>{{ msg }}</span>
+          </p>
+        }
+      </div>
+
+      <button type="submit" [disabled]="authService.loading()">Register</button>
+    </form>
+  } @else {
+    <div class="verify-panel">
+      <div class="verify-panel__hero" aria-hidden="true">
+        <div class="verify-panel__icon-badge">
+          <svg
+            class="verify-panel__icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M4 6.5h16a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 16V8A1.5 1.5 0 0 1 4 6.5Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linejoin="round" />
+            <path
+              d="m3 7.5 9 6 9-6"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+            <circle cx="17.5" cy="7.5" r="3.25" fill="#c89b3c" stroke="#0f3d2e" stroke-width="1.4" />
+            <path
+              d="M16.1 7.5h2.8M17.5 6.1v2.8"
+              stroke="#0f3d2e"
+              stroke-width="1.2"
+              stroke-linecap="round" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="verify-panel__headline">
+        <h2>Check your email</h2>
+        <p class="verify-panel__subtitle">
+          We sent a confirmation link to finish creating your account.
+        </p>
+      </div>
+
+      <div class="verify-panel__email-card">
+        <span class="verify-panel__email-label">Sent to</span>
+        <span class="verify-panel__email-value">{{ verificationEmail() }}</span>
+      </div>
+
+      <ol class="verify-panel__steps" aria-label="Next steps">
+        <li class="verify-panel__step">
+          <span class="verify-panel__step-num" aria-hidden="true">1</span>
+          <div class="verify-panel__step-body">
+            <span class="verify-panel__step-title">Open your inbox</span>
+            <span class="verify-panel__step-detail">
+              Check spam or promotions if you don’t see it within a few minutes.
+            </span>
+          </div>
+        </li>
+        <li class="verify-panel__step">
+          <span class="verify-panel__step-num" aria-hidden="true">2</span>
+          <div class="verify-panel__step-body">
+            <span class="verify-panel__step-title">Tap the confirmation link</span>
+            <span class="verify-panel__step-detail">
+              The email is from Bespoke Dua — one tap verifies your address.
+            </span>
+          </div>
+        </li>
+      </ol>
+
+      @if (resendMessage(); as msg) {
+        <p class="verify-panel__success" role="status">
+          <span class="verify-panel__success-icon" aria-hidden="true">✓</span>
           <span>{{ msg }}</span>
         </p>
       }
-    </div>
 
-    <div class="field-group">
-      <label class="field-label" for="register-email">Email</label>
-      <input
-        id="register-email"
-        type="email"
-        formControlName="email"
-        autocomplete="email"
-        [class.input-has-error]="showFieldError(form.controls.email)"
-        class="input-control"
-      />
-      @if (emailError(); as msg) {
-        <p class="field-error" role="alert">
-          <span class="field-error__icon" aria-hidden="true">!</span>
-          <span>{{ msg }}</span>
-        </p>
-      }
-    </div>
-
-    <div class="field-group">
-      <label class="field-label" for="register-password">Password</label>
-      <input
-        id="register-password"
-        type="password"
-        formControlName="password"
-        autocomplete="new-password"
-        [class.input-has-error]="showFieldError(form.controls.password)"
-        class="input-control"
-      />
-      @if (passwordError(); as msg) {
-        <p class="field-error" role="alert">
-          <span class="field-error__icon" aria-hidden="true">!</span>
-          <span>{{ msg }}</span>
-        </p>
-      }
-    </div>
-
-    <button type="submit" [disabled]="authService.loading()">Register</button>
-  </form>
-
-  @if (successMessage) {
-    <div class="form-alert form-alert--success" role="status" aria-live="polite">
-      <span class="form-alert__icon" aria-hidden="true">&#10003;</span>
-      <div class="form-alert__body">{{ successMessage }}</div>
+      <div class="verify-panel__actions">
+        <button
+          type="button"
+          class="verify-panel__btn verify-panel__btn--primary"
+          [disabled]="authService.loading()"
+          (click)="resendVerification()">
+          @if (authService.loading()) {
+            Sending…
+          } @else {
+            Resend confirmation email
+          }
+        </button>
+        <button
+          type="button"
+          class="verify-panel__btn verify-panel__btn--secondary"
+          [disabled]="authService.loading()"
+          (click)="editRegistration()">
+          Use a different email
+        </button>
+      </div>
     </div>
   }
 

@@ -30,5 +30,32 @@
         <i class="fa-regular fa-envelope" aria-hidden="true"></i>
       </a>
     </div>
+
+    <div class="footer__policies" aria-label="Policy links">
+      <a
+        class="footer__policy-link"
+        href="/terms-and-conditions"
+        routerLink="/terms-and-conditions"
+        (click)="navigateToPolicy($event, '/terms-and-conditions')"
+      >
+        Terms &amp; Conditions
+      </a>
+      <a
+        class="footer__policy-link"
+        href="/privacy-policy"
+        routerLink="/privacy-policy"
+        (click)="navigateToPolicy($event, '/privacy-policy')"
+      >
+        Privacy Policy
+      </a>
+      <a
+        class="footer__policy-link"
+        href="/refund-policy"
+        routerLink="/refund-policy"
+        (click)="navigateToPolicy($event, '/refund-policy')"
+      >
+        Refund Policy
+      </a>
+    </div>
   </div>
 </footer>

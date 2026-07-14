@@ -1,0 +1,39 @@
+@if (showWhatsNewModal()) {
+  <div
+    class="whats-new-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="whats-new-title"
+    (click)="dismissWhatsNew()">
+    <div class="whats-new-dialog" (click)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="whats-new-close"
+        (click)="dismissWhatsNew()"
+        aria-label="Close">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <div class="whats-new-badge">Update</div>
+      <h2 id="whats-new-title" class="whats-new-title">What&rsquo;s new?</h2>
+      <p class="whats-new-lead">
+        Bespoke Dua is now available on the App Store.
+      </p>
+      <p class="whats-new-detail">
+        Download it on your iPhone or iPad and continue your journey with personalised duas,
+        meaningful guidance, and a reflective experience built around remembrance.
+      </p>
+      <a
+        class="whats-new-cta"
+        href="https://apps.apple.com/gb/app/bespoke-dua/id6761731591"
+        (click)="onAppStoreClick()"
+        target="_blank"
+        rel="noopener noreferrer">
+        View on the App Store
+      </a>
+      <button type="button" class="whats-new-dismiss" (click)="dismissWhatsNew()">Continue on web</button>
+    </div>
+  </div>
+}
+
+<app-input-section></app-input-section>
+<app-dua-result></app-dua-result>

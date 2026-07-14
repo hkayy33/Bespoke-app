@@ -6,6 +6,7 @@
                 <button type="button" class="modal-close" (click)="showAimModal.set(false)" aria-label="Close">
                     <i class="fa-solid fa-x"></i>
                 </button>
+                <h3 class="reflection-title">Reflection</h3>
                 @for (exp of dua.explanations; track $index) {
                     <div class="dua-header">
                         <p class="name">{{ exp.name }}</p>

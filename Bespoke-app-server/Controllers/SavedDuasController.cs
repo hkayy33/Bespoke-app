@@ -36,7 +36,8 @@ namespace BespokeDuaApi.Controllers
                 {
                     DuaId = d.DuaId,
                     Dua = d.Dua,
-                    CreatedAt = d.CreatedAt
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt
                 })
                 .ToListAsync();
 
@@ -60,7 +61,8 @@ namespace BespokeDuaApi.Controllers
             {
                 DuaId = savedDua.DuaId,
                 Dua = savedDua.Dua,
-                CreatedAt = savedDua.CreatedAt
+                CreatedAt = savedDua.CreatedAt,
+                UpdatedAt = savedDua.UpdatedAt
             };
 
             return Ok(dto);
@@ -92,10 +94,42 @@ namespace BespokeDuaApi.Controllers
             {
                 DuaId = savedDua.DuaId,
                 Dua = savedDua.Dua,
-                CreatedAt = savedDua.CreatedAt
+                CreatedAt = savedDua.CreatedAt,
+                UpdatedAt = savedDua.UpdatedAt
             };
 
             return CreatedAtAction(nameof(GetSavedDua), new { id = savedDua.DuaId }, savedDuaDto);
+        }
+
+        // PUT: api/SavedDuas/{id}
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult<SavedDuaDto>> UpdateSavedDua(Guid id, UpdateSavedDuaDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Dua))
+            {
+                return BadRequest("Dua is required.");
+            }
+
+            var savedDua = await _context.SavedDuas.FindAsync(id);
+
+            if (savedDua == null)
+            {
+                return NotFound();
+            }
+
+            savedDua.Dua = dto.Dua;
+            savedDua.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            var savedDuaDto = new SavedDuaDto
+            {
+                DuaId = savedDua.DuaId,
+                Dua = savedDua.Dua,
+                CreatedAt = savedDua.CreatedAt,
+                UpdatedAt = savedDua.UpdatedAt
+            };
+
+            return Ok(savedDuaDto);
         }
 
         // DELETE: api/SavedDuas/{id}

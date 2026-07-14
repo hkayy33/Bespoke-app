@@ -1,0 +1,45 @@
+<div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button type="button" class="modal-close" (click)="closeModal()" aria-label="Close plans modal">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <h2>Choose your plan</h2>
+    <p class="subtitle">Stay on free or unlock unlimited bespoke duas.</p>
+
+    <div class="plans">
+      <button
+        type="button"
+        class="plan-card"
+        [class.current-plan]="currentPlan() === 'free'"
+        [class.selected]="selectedPlan() === 'free'"
+        (click)="selectPlan('free')">
+        <p class="plan-name">Free Plan</p>
+        <p class="plan-price">£0 / month</p>
+        <p class="plan-feature">7 Daily Bespoke Duas</p>
+        @if (currentPlan() === 'free') {
+          <span class="plan-badge">Current plan</span>
+        }
+      </button>
+
+      <button
+        type="button"
+        class="plan-card"
+        #plusPlanCard
+        [class.current-plan]="currentPlan() === 'plus'"
+        [class.selected]="selectedPlan() === 'plus'"
+        (click)="selectPlan('plus')">
+        <p class="plan-name">BespokeDua Plus</p>
+        <p class="plan-price">£3.99 / month</p>
+        <p class="plan-feature">Unlimited bespoke duas</p>
+        @if (currentPlan() === 'plus') {
+          <span class="plan-badge">Current plan</span>
+        }
+      </button>
+    </div>
+
+    <button type="button" class="upgrade-btn" (click)="onUpgrade()" [disabled]="selectedPlan() === 'plus'">
+      {{ upgradeButtonLabel() }}
+    </button>
+  </div>
+</div>

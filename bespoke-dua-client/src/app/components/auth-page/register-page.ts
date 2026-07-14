@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -26,7 +26,9 @@ export class RegisterPage implements OnDestroy {
 
   private sub = new Subscription();
 
-  successMessage = '';
+  /** `form` = account details; `verify` = check your email */
+  step = signal<'form' | 'verify'>('form');
+  resendMessage = signal<string | null>(null);
 
   form = this.fb.nonNullable.group({
     username: [
@@ -38,16 +40,32 @@ export class RegisterPage implements OnDestroy {
   });
 
   constructor() {
+    if (this.authService.awaitingEmailVerification()) {
+      this.step.set('verify');
+    }
+
+    effect(() => {
+      if (this.authService.awaitingEmailVerification()) {
+        this.step.set('verify');
+      }
+    });
+
     this.sub.add(
       this.form.valueChanges.subscribe(() => {
-        this.authService.clearError();
-        this.successMessage = '';
+        if (this.step() === 'form') {
+          this.authService.clearError();
+          this.resendMessage.set(null);
+        }
       })
     );
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  verificationEmail(): string {
+    return this.authService.pendingVerificationEmail() ?? this.form.controls.email.value;
   }
 
   showFieldError(control: AbstractControl | null): boolean {
@@ -96,7 +114,7 @@ export class RegisterPage implements OnDestroy {
   }
 
   register(): void {
-    this.successMessage = '';
+    this.resendMessage.set(null);
     this.form.markAllAsTouched();
 
     if (this.form.invalid) {
@@ -110,11 +128,43 @@ export class RegisterPage implements OnDestroy {
       password: raw.password,
     };
 
-    this.authService.register(payload).subscribe((user) => {
-      if (user) {
-        this.successMessage = `Welcome, ${user.username}! Your account is ready.`;
+    this.authService.register(payload).subscribe((result) => {
+      if (result.status === 'signed_in') {
         this.form.reset();
+        this.step.set('form');
+        this.authService.clearEmailVerificationStage();
+        return;
+      }
+
+      if (result.status === 'awaiting_verification') {
+        this.step.set('verify');
+        this.form.disable();
+        return;
+      }
+
+      if (result.status === 'failed') {
+        this.form.enable();
       }
     });
   }
+
+  resendVerification(): void {
+    this.resendMessage.set(null);
+    this.authService.clearError();
+
+    this.authService.resendVerificationEmail().subscribe((sent) => {
+      if (sent) {
+        this.resendMessage.set('Email sent.');
+      }
+    });
+  }
+
+  editRegistration(): void {
+    this.authService.clearEmailVerificationStage();
+    this.step.set('form');
+    this.form.enable();
+    this.resendMessage.set(null);
+    this.authService.clearError();
+  }
+
 }

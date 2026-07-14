@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { DuaResultCard } from '../dua-result-card/dua-result-card';
 import { DuaService } from '../../../domain/services/dua.service';
 import { CommonModule } from '@angular/common';
-import { DuaReciever } from '../../../domain/models/dua-reciever';
 
 @Component({
   standalone: true,
@@ -12,7 +11,6 @@ import { DuaReciever } from '../../../domain/models/dua-reciever';
   styleUrls: ['./dua-result-list.scss'],
 })
 export class DuaResultList {
-  // duas : DuaReciever[] = []
   constructor(protected duaService: DuaService) {}
 
   // ngOnInit(): void{

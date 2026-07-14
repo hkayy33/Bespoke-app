@@ -26,6 +26,29 @@
   overflow: hidden;
 }
 
+.auth-verify-nav {
+  padding: 0.875rem 1.25rem 0.25rem;
+}
+
+.auth-verify-nav__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #0f3d2e;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-verify-nav__chevron {
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
 .auth-toggle {
   display: flex;
   gap: 0.35rem;
