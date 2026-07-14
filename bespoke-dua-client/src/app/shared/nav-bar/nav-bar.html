@@ -1,14 +1,21 @@
-<div class="nav-container">
+<header class="nav-container">
   <div class="nav-top">
-    <div class="nav-left">
-      <div class="brand">
-        <img src="/hands.png" alt="Hands making dua" />
-      </div>
-
-      <p class="quote">
-        "I am as My servant thinks I am…"
-        <span>[Hadith Qudsi]</span>
-      </p>
-    </div>
+    <a class="brand" routerLink="/" aria-label="Bespoke Dua home">
+      <img src="/logo-app.png" alt="" width="40" height="40" />
+      <span class="brand__name">Bespoke Dua</span>
+    </a>
+    <a
+      class="nav-store"
+      [href]="appStoreUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img
+        src="/images/download-on-the-app-store.svg"
+        alt="Download on the App Store"
+        width="120"
+        height="40"
+      />
+    </a>
   </div>
-</div>
+</header>

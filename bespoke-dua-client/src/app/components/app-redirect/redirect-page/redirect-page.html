@@ -1,85 +1,172 @@
 <div class="page">
-  <div class="hero">
+  <section class="hero" aria-labelledby="hero-brand">
     <div class="hero__glow" aria-hidden="true"></div>
-    <div class="hero__hex" aria-hidden="true"></div>
+    <div class="hero__pattern" aria-hidden="true"></div>
+    <div class="hero__sparkles" aria-hidden="true"></div>
 
     <div class="hero__inner">
       <div class="hero__copy">
-        <div class="hero__copy-card">
-          <h1 class="hero__title">Personalise your heart’s duas</h1>
-          <p class="hero__tagline">
-            Write, reflect, and carry heartfelt supplications crafted for you — save, revisit, and make
-            them yours.
-          </p>
-          <div class="hero__downloads">
-            <a
-              class="hero__cta"
-              [href]="appStoreUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Download now
-            </a>
-            <a
-              class="hero__store-badge-link"
-              [href]="appStoreUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                class="hero__store-badge"
-                src="/images/download-on-the-app-store.svg"
-                alt="Download on the App Store"
-                width="180"
-                height="60"
-              />
-            </a>
-          </div>
+        <p id="hero-brand" class="hero__brand">Bespoke Dua</p>
+        <h1 class="hero__title">Your daily dua companion</h1>
+        <p class="hero__lede">
+          Create personal duas, discover Sunnah supplications, and reflect on the 99 Names — all in one place.
+        </p>
+        <div class="hero__cta-row">
+          <a
+            class="store-badge"
+            [href]="appStoreUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/images/download-on-the-app-store.svg"
+              alt="Download on the App Store"
+              width="180"
+              height="60"
+            />
+          </a>
         </div>
+        <p class="hero__pillars">Create · Discover · Reflect</p>
       </div>
 
       <div class="hero__visual">
-        <app-carousel></app-carousel>
+        <img
+          class="hero__phone"
+          src="/images/promo/daily-companion.png"
+          alt="Bespoke Dua home screen on iPhone — Create, Discover, and Reflect"
+          width="640"
+          height="1384"
+          fetchpriority="high"
+        />
       </div>
     </div>
-  </div>
+  </section>
 
-  <section class="flow" aria-labelledby="flow-heading">
-    <div class="flow__inner">
-      <h2 id="flow-heading" class="flow__eyebrow">
-        Personalised duas powered by the names of Allah
-      </h2>
-      <ol class="flow__list">
-        <li class="flow__step">
-          <span class="flow__icon" aria-hidden="true">
-            <i class="fa-solid fa-pencil"></i>
-          </span>
-          <div class="flow__copy">
-            <span class="flow__title">Write your intention</span>
-            <span class="flow__desc">Write your heartfelt du&apos;a</span>
-          </div>
+  <section class="belief" aria-labelledby="belief-heading">
+    <div class="belief__inner">
+      <p class="belief__kicker">Built on yaqeen</p>
+      <h2 id="belief-heading" class="belief__title">Make du&rsquo;a with full conviction</h2>
+      <p class="belief__text">
+        We often hear, &ldquo;Make du&apos;a with yaqeen (full conviction),&rdquo; but how do we do this?
+        By calling upon Allah through His names and attributes, we remind ourselves of His mercy,
+        power, and wisdom.
+      </p>
+      <p class="belief__text">
+        BespokeDua is built on this idea, connecting your personal du&apos;as to the reassuring ropes
+        our Lord has hung down, so you can ask with certainty, hope, and sincerity.
+      </p>
+    </div>
+  </section>
+
+  <section class="feature feature--feel" aria-labelledby="feel-heading">
+    <div class="feature__inner feature__inner--reverse">
+      <div class="feature__copy">
+        <p class="feature__kicker">Sunnah Duas</p>
+        <h2 id="feel-heading" class="feature__title">Share how you feel</h2>
+        <p class="feature__text">
+          Describe what is on your heart and get matched Sunnah duas in seconds — phrased for the moment you’re in.
+        </p>
+        <p class="feature__trail">Express · Match · Find duas</p>
+      </div>
+      <div class="feature__media">
+        <img
+          src="/images/promo/share-feelings.png"
+          alt="Bespoke Dua matching a feeling to recommended Sunnah duas"
+          width="640"
+          height="1384"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="feature feature--feed" aria-labelledby="feed-heading">
+    <div class="feature__inner">
+      <div class="feature__copy">
+        <p class="feature__kicker">Community</p>
+        <h2 id="feed-heading" class="feature__title">Join the Dua Feed</h2>
+        <p class="feature__text">
+          Make dua for others, share saved duas anonymously, and be part of a caring community.
+        </p>
+        <p class="feature__trail">Share · Make dua · Community</p>
+      </div>
+      <div class="feature__media feature__media--large">
+        <img
+          src="/images/promo/dua-feed.png"
+          alt="Dua Feed screen showing community duas and anonymous posts"
+          width="640"
+          height="1384"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="feature feature--organise" aria-labelledby="organise-heading">
+    <div class="feature__inner feature__inner--reverse">
+      <div class="feature__copy">
+        <p class="feature__kicker">Your library</p>
+        <h2 id="organise-heading" class="feature__title">Organise your duas</h2>
+        <p class="feature__text">
+          Group saved duas into beautiful collections for every part of life — and return to them whenever you need.
+        </p>
+        <p class="feature__trail">Save · Organise · Revisit</p>
+      </div>
+      <div class="feature__media">
+        <img
+          src="/images/promo/organise-duas.png"
+          alt="Saved screen with personal dua collections in Bespoke Dua"
+          width="640"
+          height="1384"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="pillars" aria-labelledby="pillars-heading">
+    <div class="pillars__inner">
+      <h2 id="pillars-heading" class="pillars__title">Everything you need for meaningful dua</h2>
+      <ul class="pillars__list">
+        <li class="pillars__item">
+          <span class="pillars__icon" aria-hidden="true"><i class="fa-solid fa-pen-to-square"></i></span>
+          <h3 class="pillars__name">Create</h3>
+          <p class="pillars__desc">Write what’s in your heart and receive a refined, personalised dua.</p>
         </li>
-        <li class="flow__connector" aria-hidden="true"></li>
-        <li class="flow__step">
-          <span class="flow__icon" aria-hidden="true">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-          </span>
-          <div class="flow__copy">
-            <span class="flow__title">Receive 3 bespoke duas</span>
-            <span class="flow__desc">Crafted with Allah&apos;s names</span>
-          </div>
+        <li class="pillars__item">
+          <span class="pillars__icon" aria-hidden="true"><i class="fa-solid fa-book-quran"></i></span>
+          <h3 class="pillars__name">Discover</h3>
+          <p class="pillars__desc">Find authentic Sunnah duas matched to how you feel.</p>
         </li>
-        <li class="flow__connector" aria-hidden="true"></li>
-        <li class="flow__step">
-          <span class="flow__icon" aria-hidden="true">
-            <i class="fa-solid fa-book-open"></i>
-          </span>
-          <div class="flow__copy">
-            <span class="flow__title">Learn the names used</span>
-            <span class="flow__desc">Understand the meaning behind your du&apos;a</span>
-          </div>
+        <li class="pillars__item">
+          <span class="pillars__icon" aria-hidden="true"><i class="fa-solid fa-star-and-crescent"></i></span>
+          <h3 class="pillars__name">Reflect</h3>
+          <p class="pillars__desc">Explore the 99 Names of Allah and deepen every supplication.</p>
         </li>
-      </ol>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-heading">
+    <div class="cta__glow" aria-hidden="true"></div>
+    <div class="cta__inner">
+      <h2 id="cta-heading" class="cta__title">Begin with yaqeen</h2>
+      <p class="cta__text">
+        Download Bespoke Dua and make more intentional, heartfelt du’as every day.
+      </p>
+      <a
+        class="store-badge store-badge--cta"
+        [href]="appStoreUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="/images/download-on-the-app-store.svg"
+          alt="Download on the App Store"
+          width="180"
+          height="60"
+        />
+      </a>
     </div>
   </section>
 
