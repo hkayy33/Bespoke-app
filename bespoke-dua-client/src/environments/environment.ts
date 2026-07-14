@@ -8,6 +8,8 @@ export const environment = {
   production: false,
   apiUrl: '/api',
   duaUrl: '/api/Dua',
+  /** App Store product URL from App Store Connect → Marketing. */
+  appStoreUrl: 'https://apps.apple.com/gb/app/bespokedua/id6761731591',
   /** Supabase email confirmation redirect (must match Authentication → Redirect URLs). */
   authRedirectUrl: 'http://localhost:4200/auth/callback',
   /** iOS custom URL scheme for progressive deep linking after email verification. */

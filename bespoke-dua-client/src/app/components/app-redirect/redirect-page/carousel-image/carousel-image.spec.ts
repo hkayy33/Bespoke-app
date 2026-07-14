@@ -1,20 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 
-import { NavBar } from './nav-bar';
+import { CarouselImage } from './carousel-image';
 
-describe('NavBar', () => {
-  let component: NavBar;
-  let fixture: ComponentFixture<NavBar>;
+describe('CarouselImage', () => {
+  let component: CarouselImage;
+  let fixture: ComponentFixture<CarouselImage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavBar],
-      providers: [provideRouter([])],
+      imports: [CarouselImage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NavBar);
+    fixture = TestBed.createComponent(CarouselImage);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -8,6 +8,8 @@ export const environment = {
   production: true,
   apiUrl: 'https://bespoke-app.fly.dev/api',
   duaUrl: 'https://bespoke-app.fly.dev/api/Dua',
+  /** App Store product URL from App Store Connect → Marketing. */
+  appStoreUrl: 'https://apps.apple.com/gb/app/bespokedua/id6761731591',
   /** Must match Supabase → Authentication → Redirect URLs. */
   authRedirectUrl: 'https://www.bespokedua.com/auth/callback',
   iosAuthRedirectUrl: 'myapp://auth/callback',

@@ -189,6 +189,30 @@ public class AuthController : ControllerBase
             _logger.LogError(ex, "Failed to sync Supabase profile for auth user {AuthUserId}.", authUserId);
             return Conflict(new { message = "Could not create your profile. The email or username may already be in use." });
         }
+
+        // DELETE: api/Auth/account
+        [Authorize]
+        [HttpDelete("account")]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 
     [Authorize(AuthenticationSchemes = AppAuthenticationExtensions.CombinedScheme)]
