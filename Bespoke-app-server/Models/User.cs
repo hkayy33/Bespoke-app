@@ -19,5 +19,6 @@ namespace BespokeDuaApi.Models
         public ICollection<DuaCollection> DuaCollections { get; set; } = new List<DuaCollection>();
         public ICollection<DuaFeedPost> DuaFeedPosts { get; set; } = new List<DuaFeedPost>();
         public ICollection<DuaFeedLike> DuaFeedLikes { get; set; } = new List<DuaFeedLike>();
+        public ICollection<DevicePushToken> DevicePushTokens { get; set; } = new List<DevicePushToken>();
     }
 }

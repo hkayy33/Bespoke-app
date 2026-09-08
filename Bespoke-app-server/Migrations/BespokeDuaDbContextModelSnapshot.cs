@@ -59,6 +59,35 @@ namespace Bespoke_app_server.Migrations
                     b.ToTable("AllahNames");
                 });
 
+            modelBuilder.Entity("BespokeDuaApi.Models.DevicePushToken", b =>
+                {
+                    b.Property<Guid>("DevicePushTokenId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsSandbox")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("DevicePushTokenId");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DevicePushTokens");
+                });
+
             modelBuilder.Entity("BespokeDuaApi.Models.DuaCollection", b =>
                 {
                     b.Property<Guid>("CollectionId")
@@ -419,6 +448,17 @@ namespace Bespoke_app_server.Migrations
                     b.Navigation("SavedSunnahDua");
                 });
 
+            modelBuilder.Entity("BespokeDuaApi.Models.DevicePushToken", b =>
+                {
+                    b.HasOne("BespokeDuaApi.Models.User", "User")
+                        .WithMany("DevicePushTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BespokeDuaApi.Models.DuaFeedLike", b =>
                 {
                     b.HasOne("BespokeDuaApi.Models.DuaFeedPost", "Post")
@@ -534,6 +574,8 @@ namespace Bespoke_app_server.Migrations
 
             modelBuilder.Entity("BespokeDuaApi.Models.User", b =>
                 {
+                    b.Navigation("DevicePushTokens");
+
                     b.Navigation("DuaCollections");
 
                     b.Navigation("DuaFeedLikes");

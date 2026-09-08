@@ -1,6 +1,7 @@
 using BespokeDuaApi.Data;
 using BespokeDuaApi.DTO;
 using BespokeDuaApi.Models;
+using BespokeDuaApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +17,14 @@ public class DuaFeedController : ControllerBase
     private static readonly TimeSpan PostLifetime = TimeSpan.FromHours(24);
 
     private readonly BespokeDuaDbContext _context;
+    private readonly ApnsPushService _push;
+    private readonly ILogger<DuaFeedController> _logger;
 
-    public DuaFeedController(BespokeDuaDbContext context)
+    public DuaFeedController(BespokeDuaDbContext context, ApnsPushService push, ILogger<DuaFeedController> logger)
     {
         _context = context;
+        _push = push;
+        _logger = logger;
     }
 
     /// <summary>
@@ -305,6 +310,7 @@ public class DuaFeedController : ControllerBase
             return BadRequest("You cannot make dua on your own post.");
 
         var existing = post.Likes.FirstOrDefault(a => a.UserId == dto.UserId);
+        var rememberedAuthor = false;
         if (existing is not null)
         {
             _context.DuaFeedLikes.Remove(existing);
@@ -318,9 +324,23 @@ public class DuaFeedController : ControllerBase
                 UserId = dto.UserId,
                 CreatedAt = now
             });
+            rememberedAuthor = true;
         }
 
         await _context.SaveChangesAsync();
+
+        if (rememberedAuthor)
+        {
+            try
+            {
+                await _push.NotifyRememberedInDuaAsync(_context, post.UserId);
+            }
+            catch (Exception ex)
+            {
+                // The reaction is already saved. A push failure should not fail the request.
+                _logger.LogWarning(ex, "Failed to send dua-feed reaction push for post {PostId}.", postId);
+            }
+        }
 
         var duaCount = await _context.DuaFeedLikes.CountAsync(a => a.PostId == postId);
         var hasUserMadeDua = await _context.DuaFeedLikes

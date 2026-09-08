@@ -44,6 +44,12 @@ builder.Services.AddScoped<UsageService>();
 builder.Services.AddScoped<AppUserService>();
 builder.Services.AddScoped<SupabaseAuthAdminService>();
 builder.Services.AddScoped<UmmahApiService>();
+builder.Services.AddSingleton<ApnsPushService>();
+builder.Services.AddHttpClient(nameof(ApnsPushService))
+    .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+    {
+        EnableMultipleHttp2Connections = true
+    });
 builder.Services.AddAppAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
