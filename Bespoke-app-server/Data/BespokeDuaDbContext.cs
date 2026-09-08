@@ -21,6 +21,7 @@ namespace BespokeDuaApi.Data
         public DbSet<DuaCollectionItem> DuaCollectionItems { get; set; } = null!;
         public DbSet<DuaFeedPost> DuaFeedPosts { get; set; } = null!;
         public DbSet<DuaFeedLike> DuaFeedLikes { get; set; } = null!;
+        public DbSet<DevicePushToken> DevicePushTokens { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -306,6 +307,31 @@ namespace BespokeDuaApi.Data
                 entity.HasIndex(e => e.PostId);
                 entity.HasIndex(e => new { e.PostId, e.UserId })
                       .IsUnique();
+            });
+
+            modelBuilder.Entity<DevicePushToken>(entity =>
+            {
+                entity.HasKey(e => e.DevicePushTokenId);
+
+                entity.Property(e => e.DevicePushTokenId)
+                      .ValueGeneratedNever();
+
+                entity.Property(e => e.Token)
+                      .IsRequired()
+                      .HasMaxLength(256);
+
+                entity.Property(e => e.UpdatedAt)
+                      .IsRequired();
+
+                entity.HasOne(e => e.User)
+                      .WithMany(u => u.DevicePushTokens)
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(e => e.Token)
+                      .IsUnique();
+
+                entity.HasIndex(e => e.UserId);
             });
         }
     }

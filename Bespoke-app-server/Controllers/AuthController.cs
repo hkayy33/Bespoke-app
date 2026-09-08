@@ -31,6 +31,23 @@ public class AuthController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// True when this email already belongs to an app account. Checked before a
+    /// verification sign-up so we never create a second identity for an existing user.
+    /// </summary>
+    [HttpGet("email-in-use")]
+    public async Task<ActionResult> EmailInUse([FromQuery] string? email)
+    {
+        var trimmed = email?.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed))
+        {
+            return BadRequest(new { message = "Email is required." });
+        }
+
+        var inUse = await _context.Users.AnyAsync(u => EF.Functions.ILike(u.Email, trimmed));
+        return Ok(new { inUse });
+    }
+
     [HttpPost("register")]
     public async Task<ActionResult<GetUserDto>> Register(RegisterDto dto)
     {
@@ -77,25 +94,26 @@ public class AuthController : ControllerBase
             return BadRequest(new { message = "Email and Password are required." });
         }
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+        var email = dto.Email.Trim();
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Email, email));
 
         if (user is null)
         {
             return Unauthorized(new { message = "Invalid email or password." });
         }
 
-        if (user.AuthUserId is not null)
-        {
-            return BadRequest(new
-            {
-                message = "This account uses email verification sign-in. Use the same email and password after verifying your email."
-            });
-        }
-
         if (string.IsNullOrEmpty(user.HashedPassword) ||
             !PasswordHasher.VerifyPassword(dto.Password, user.HashedPassword))
         {
             return Unauthorized(new { message = "Invalid email or password." });
+        }
+
+        // A stored password is the old sign-in. Don't force that account through email verification.
+        if (user.AuthUserId is not null)
+        {
+            user.AuthUserId = null;
+            await _context.SaveChangesAsync();
         }
 
         return Ok(new LoginResponseDto
@@ -141,6 +159,11 @@ public class AuthController : ControllerBase
 
             if (existingByEmail is not null)
             {
+                if (!string.IsNullOrEmpty(existingByEmail.HashedPassword))
+                {
+                    return Conflict(new { message = "This email already has an account. Sign in with your password." });
+                }
+
                 if (existingByEmail.AuthUserId is not null && existingByEmail.AuthUserId != authUserId)
                 {
                     return Conflict(new { message = "This email is already linked to another account." });
@@ -188,30 +211,6 @@ public class AuthController : ControllerBase
 
             _logger.LogError(ex, "Failed to sync Supabase profile for auth user {AuthUserId}.", authUserId);
             return Conflict(new { message = "Could not create your profile. The email or username may already be in use." });
-        }
-
-        // DELETE: api/Auth/account
-        [Authorize]
-        [HttpDelete("account")]
-        public async Task<IActionResult> DeleteAccount()
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
-            {
-                return Unauthorized();
-            }
-
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
     }
 
