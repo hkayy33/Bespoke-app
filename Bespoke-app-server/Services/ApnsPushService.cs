@@ -53,8 +53,8 @@ public class ApnsPushService
             var result = await SendAlertAsync(
                 device.Token,
                 device.IsSandbox,
-                "🤍 You were remembered in someone's dua",
-                "May Allah accept it. Ameen.",
+                "A dua was made for you",
+                "💛 Someone took a moment to make a dua for you. May Allah accept it. Ameen.",
                 cancellationToken);
 
             if (result == ApnsSendResult.Unregistered)
