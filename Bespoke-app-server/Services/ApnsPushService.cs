@@ -54,7 +54,7 @@ public class ApnsPushService
                 device.Token,
                 device.IsSandbox,
                 "A dua was made for you",
-                "💛 Someone took a moment to make a dua for you. May Allah accept it. Ameen.",
+                "💛 Someone took a moment to make dua for you. May Allah accept it. Ameen.",
                 cancellationToken);
 
             if (result == ApnsSendResult.Unregistered)
